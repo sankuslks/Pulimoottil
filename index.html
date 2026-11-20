@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Hub & Directory</title>
+
+    <!-- Tailwind CSS CDN for responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            50: '#f0f7ff',
+                            100: '#e0f0fe',
+                            200: '#bae2fd',
+                            300: '#7cd0fd',
+                            400: '#36bafb',
+                            500: '#0ca3eb',
+                            600: '#0283c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS Styles -->
+    <style>
+        .blurred-content {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
+
+    <!-- LOGIN MODAL / OVERLAY -->
+    <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full p-6 text-center transform transition-all">
+            <div class="w-16 h-16 bg-pastel-100 text-pastel-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner overflow-hidden border border-pastel-200 relative">
+                <img id="loginLogoImg" src="mb-avatar/logo.png" alt="Family Hub Logo" class="w-full h-full object-cover" onerror="this.classList.add('hidden'); document.getElementById('loginLogoFallback').classList.remove('hidden');">
+                <i id="loginLogoFallback" class="fa-solid fa-user-lock hidden"></i>
+            </div>
+            <h2 class="text-2xl font-bold font-display text-slate-800 mb-1">Welcome to Our Family Hub!</h2>
+            <p class="text-slate-500 text-sm mb-6">Please enter your name and password to access the private portal.</p>
+
+            <form id="loginForm" onsubmit="return handleLoginSubmit(event);" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">YOUR NAME</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="text" id="usernameInput" required placeholder="e.g. Lunar or Sumesh" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-pastel-400 focus:border-pastel-400 outline-none transition text-slate-800 text-base font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">SECURITY PASSWORD</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="password" id="passwordInput" required placeholder="Enter password" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-pastel-400 focus:border-pastel-400 outline-none transition text-slate-800 text-base font-medium">
+                    </div>
+                </div>
+
+                <div id="loginError" class="hidden text-xs text-rose-500 font-semibold bg-rose-50 p-2.5 rounded-lg border border-rose-200 text-center">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Invalid name or password!
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.98] text-white font-semibold rounded-xl shadow-md shadow-pastel-500/20 transition flex items-center justify-center gap-2 text-base">
+                    Enter Family Portal <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="appContainer" class="blurred-content transition-all duration-500">
+        <!-- HEADER / NAVIGATION -->
+        <header class="bg-pastel-700 text-white shadow-md sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+                <!-- Brand Title & Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-xl font-bold font-display shadow-inner overflow-hidden border border-white/20 relative">
+                        <img id="headerLogoImg" src="mb-avatar/logo.png" alt="Family Hub Logo" class="w-full h-full object-cover" onerror="this.classList.add('hidden'); document.getElementById('headerLogoFallback').classList.remove('hidden');">
+                        <i id="headerLogoFallback" class="fa-solid fa-house-chimney-heart hidden"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold font-display tracking-tight leading-none">Our Family Hub</h1>
+                        <p class="text-[11px] text-pastel-200">Private Family Portal</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs (Desktop/Tablet) -->
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('directory')" id="tab-directory" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition bg-white/20 text-white">
+                        <i class="fa-solid fa-users mr-2"></i>Directory
+                    </button>
+                    <button onclick="switchTab('events')" id="tab-events" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-pastel-100">
+                        <i class="fa-solid fa-bullhorn mr-2"></i>Functions & Alerts
+                    </button>
+                    <button onclick="switchTab('gallery')" id="tab-gallery" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-pastel-100">
+                        <i class="fa-solid fa-images mr-2"></i>Gallery
+                    </button>
+                    <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn admin-only hidden px-4 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-amber-200">
+                        <i class="fa-solid fa-shield-halved mr-2"></i>Admin Portal
+                    </button>
+                </nav>
+
+                <!-- User Profile & Log Out Badge -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="text-right">
+                        <div id="userDisplay" class="text-xs sm:text-sm font-bold leading-tight">Guest User</div>
+                        <div id="roleDisplay" class="text-[10px] sm:text-xs text-pastel-200 font-medium">Family Member</div>
+                    </div>
+                    <button onclick="handleLogout()" title="Logout" class="p-2 text-pastel-200 hover:text-white hover:bg-white/10 rounded-lg transition active:scale-95">
+                        <i class="fa-solid fa-right-from-bracket text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MOBILE BOTTOM NAVIGATION BAR -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 px-2 py-1.5 flex justify-around items-center shadow-lg">
+            <button onclick="switchTab('directory')" id="mob-tab-directory" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-pastel-700 font-medium">
+                <i class="fa-solid fa-users text-lg"></i>
+                <span class="text-[10px] mt-0.5">Directory</span>
+            </button>
+            <button onclick="switchTab('events')" id="mob-tab-events" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium">
+                <i class="fa-solid fa-bullhorn text-lg"></i>
+                <span class="text-[10px] mt-0.5">Functions</span>
+            </button>
+            <button onclick="switchTab('gallery')" id="mob-tab-gallery" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium">
+                <i class="fa-solid fa-images text-lg"></i>
+                <span class="text-[10px] mt-0.5">Gallery</span>
+            </button>
+            <button onclick="switchTab('admin')" id="mob-tab-admin" class="mob-tab-btn admin-only hidden flex flex-col items-center py-1 px-3 rounded-xl text-amber-600 font-medium">
+                <i class="fa-solid fa-shield-halved text-lg"></i>
+                <span class="text-[10px] mt-0.5">Admin</span>
+            </button>
+        </nav>
+
+        <!-- CONTENT CONTAINERS -->
+        <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+
+            <!-- 1. DIRECTORY SECTION -->
+            <section id="section-directory" class="space-y-4 sm:space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Directory</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm">Grouped by Household</p>
+                    </div>
+
+                    <div class="w-full sm:w-auto">
+                        <div class="relative w-full">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                            <input type="text" id="directorySearch" onkeyup="filterDirectory()" placeholder="Search members..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-pastel-400 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sort / Filter By Family Bar -->
+                <div class="bg-white p-3 sm:px-5 sm:py-3.5 rounded-2xl shadow-sm border border-slate-200/60 flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-down-a-z text-pastel-600"></i> Sort / Family:
+                    </span>
+                    <div id="familySortButtons" class="flex flex-wrap items-center gap-2"></div>
+                </div>
+
+                <!-- Directory Grid Output -->
+                <div id="directoryGrid" class="space-y-6 sm:space-y-8"></div>
+            </section>
+
+            <!-- 2. EVENTS SECTION -->
+            <section id="section-events" class="hidden space-y-4 sm:space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Functions & Notifications</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm">Upcoming events and broadcast alerts</p>
+                    </div>
+                </div>
+
+                <!-- Admin Broadcast Event Form -->
+                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-2xl border border-amber-200 shadow-sm space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-bullhorn text-amber-500"></i> Post New Function / Notification
+                    </h3>
+                    <form onsubmit="return handleAddEvent(event);" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <input type="text" id="evTitle" required placeholder="Event Title (e.g. Wedding Reception)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="evDate" required placeholder="Date (e.g. Dec 25, 2026)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="evVenue" required placeholder="Venue (e.g. Community Hall)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="evAgenda" required placeholder="Agenda / Details" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <button type="submit" class="sm:col-span-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow transition">
+                            <i class="fa-solid fa-paper-plane mr-1"></i> Broadcast Event
+                        </button>
+                    </form>
+                </div>
+
+                <div id="eventsFeed" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"></div>
+            </section>
+
+            <!-- 3. GALLERY SECTION -->
+            <section id="section-gallery" class="hidden space-y-4 sm:space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Photo Gallery</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm">Organized folders with a maximum limit of 20 photos per folder</p>
+                    </div>
+                </div>
+
+                <!-- ADMIN GALLERY MANAGEMENT (CREATE FOLDER & UPLOAD PHOTO) -->
+                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-2xl border border-amber-200 shadow-sm space-y-6">
+                    <!-- Create New Folder -->
+                    <div class="space-y-3 border-b border-slate-100 pb-5">
+                        <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-folder-plus text-pastel-600"></i> Create New Gallery Folder
+                        </h3>
+                        <form onsubmit="return handleCreateFolder(event);" class="flex flex-col sm:flex-row gap-3 text-sm">
+                            <input type="text" id="newFolderName" required placeholder="Folder Name (e.g. Wedding Ceremony)" class="flex-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            <button type="submit" class="px-5 py-2.5 bg-pastel-600 hover:bg-pastel-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> Create Folder
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Upload Photo to Folder -->
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-amber-500"></i> Upload Photo to Gallery (Max 20/Folder)
+                        </h3>
+                        <form onsubmit="return handleUploadPhoto(event);" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Select Folder</label>
+                                <select id="galFolder" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                    <option value="Summer Gathering">Summer Gathering</option>
+                                    <option value="Holiday Celebration">Holiday Celebration</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Photo Title</label>
+                                <input type="text" id="galTitle" required placeholder="e.g. Stage Ceremony" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Photo URL / Path</label>
+                                <input type="text" id="galUrl" required placeholder="https://... or wedding/photo1.jpg" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <button type="submit" class="sm:col-span-2 lg:col-span-3 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add Photo to Folder
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Inline Status Message for Gallery Limits -->
+                <div id="galleryStatusMsg" class="hidden text-xs font-semibold p-3 rounded-xl border"></div>
+
+                <div id="galleryGrid" class="space-y-6 sm:space-y-8"></div>
+            </section>
+
+            <!-- 4. ADMIN SECTION -->
+            <section id="section-admin" class="hidden space-y-4 sm:space-y-6">
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60 space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Administrator Console</h2>
+                            <p class="text-slate-500 text-xs sm:text-sm">Manage user access, add new members, and edit member avatars</p>
+                        </div>
+                        <span class="self-start sm:self-auto px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-200">
+                            <i class="fa-solid fa-shield-halved mr-1"></i> Admin Privileges Active
+                        </span>
+                    </div>
+
+                    <!-- EDIT MEMBER AVATAR FORM -->
+                    <div class="bg-amber-50/60 p-4 sm:p-5 rounded-xl border border-amber-200 space-y-4">
+                        <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-image text-amber-600"></i> Edit Member Avatar
+                        </h3>
+                        <form onsubmit="return handleEditAvatarSubmit(event);" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm items-end">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Select Member</label>
+                                <select id="editAvatarMemberSelect" onchange="loadMemberAvatarToEdit(this.value)" required class="w-full p-2.5 bg-white border border-amber-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-400 font-medium text-slate-800">
+                                    <option value="">-- Choose Member --</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Avatar Image Path / URL</label>
+                                <input type="text" id="editAvatarPathInput" required placeholder="mb-avatar/member.jpg or https://..." class="w-full p-2.5 bg-white border border-amber-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-400">
+                            </div>
+                            <button type="submit" class="sm:col-span-3 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow transition">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> Update Avatar
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ADD NEW MEMBER FORM -->
+                    <div class="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
+                        <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-user-plus text-pastel-600"></i> Add New Family Member & Login Credentials
+                        </h3>
+                        <form onsubmit="return handleAddMemberSubmit(event);" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Member Name (Login Username)</label>
+                                <input type="text" id="newMemName" required placeholder="e.g. Rahul" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Login Password (Manual)</label>
+                                <input type="text" id="newMemPass" required placeholder="e.g. 7777 or custom password" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Household / Family Base</label>
+                                <select id="newMemHead" onchange="toggleCustomFamilyInput('new')" required class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                    <option value="Sumesh's Family">Sumesh's Family</option>
+                                    <option value="Sasidharan's Family">Sasidharan's Family</option>
+                                    <option value="Other Family">Other Family</option>
+                                </select>
+                            </div>
+                            <div id="newCustomFamilyWrapper" class="hidden sm:col-span-2">
+                                <label class="block text-xs font-semibold text-pastel-700 mb-1">New Family Head Name (Creates "[Name]'s Family" section)</label>
+                                <input type="text" id="newCustomFamilyHead" placeholder="e.g. Rahul (becomes Rahul's Family)" class="w-full p-2.5 bg-pastel-50/50 border border-pastel-300 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Phone Number</label>
+                                <input type="text" id="newMemPhone" required placeholder="+91 9876543210" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Google Maps Link</label>
+                                <input type="text" id="newMemAddress" placeholder="https://maps.google.com/..." class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Access Role</label>
+                                <select id="newMemRole" required class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                    <option value="member">Member</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="banned">Banned</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Avatar Path (Optional)</label>
+                                <input type="text" id="newMemAvatar" placeholder="mb-avatar/rahul.jpg" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <button type="submit" class="sm:col-span-2 py-3 bg-pastel-600 hover:bg-pastel-700 text-white font-bold rounded-xl shadow transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add Member & Save Login
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Role & Access Management Table -->
+                    <div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                            <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-users-gear text-pastel-600"></i> Registered Users & Roles
+                            </h3>
+                            <span id="cloudSyncBadge" class="self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200">
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Sync Ready
+                            </span>
+                        </div>
+                        <div class="overflow-x-auto rounded-xl border border-slate-200">
+                            <table class="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-50">
+                                        <th class="p-3">User Name</th>
+                                        <th class="p-3">Designation / Family</th>
+                                        <th class="p-3">Password</th>
+                                        <th class="p-3">Access Role</th>
+                                        <th class="p-3 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminRoleTable" class="divide-y divide-slate-100 text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- BROADCAST / NOTIFICATION TOAST -->
+    <div id="toastBanner" class="hidden fixed bottom-20 md:bottom-5 right-4 left-4 md:left-auto z-50 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 text-sm">
+        <i class="fa-solid fa-bell text-amber-400"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- FIREBASE REALTIME DATABASE MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcSmTky-zP38nDZuHDo6dUA7Fnx8u1EwE",
+            authDomain: "pulimoottil-members.firebaseapp.com",
+            databaseURL: "https://pulimoottil-members-default-rtdb.firebaseio.com",
+            projectId: "pulimoottil-members",
+            storageBucket: "pulimoottil-members.firebasestorage.app",
+            messagingSenderId: "74118886767",
+            appId: "1:74118886767:web:07571b23a8335de30b249a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const rtdb = getDatabase(app);
+        const hubStateRef = ref(rtdb, "familyHub/state");
+
+        function setRtdbBadge(mode, label) {
+            const badge = document.getElementById("cloudSyncBadge");
+            if (!badge) return;
+            if (mode === "live") {
+                badge.innerHTML = `<i class="fa-solid fa-cloud-check mr-1"></i> ${label}`;
+                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
+            } else if (mode === "warn") {
+                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${label}`;
+                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200";
+            }
+        }
+
+        window.pushHubStateToRealtimeDb = function(payload) {
+            if (!payload || typeof payload !== "object") return;
+            set(hubStateRef, payload)
+                .then(() => setRtdbBadge("live", "RTDB Synced"))
+                .catch((err) => {
+                    console.warn("Realtime DB write warning:", err);
+                    setRtdbBadge("warn", "Check RTDB Rules");
+                });
+        };
+
+        onValue(hubStateRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const remotePayload = snapshot.val();
+                if (remotePayload && typeof remotePayload === "object") {
+                    localStorage.setItem("familyHub_CompleteState_v1", JSON.stringify(remotePayload));
+                    if (typeof window.applySyncedPayload === "function") {
+                        window.applySyncedPayload(remotePayload);
+                    }
+                    setRtdbBadge("live", "RTDB Live");
+                }
+            } else if (typeof window.buildHubPayload === "function") {
+                const initialPayload = window.buildHubPayload();
+                set(hubStateRef, initialPayload)
+                    .then(() => setRtdbBadge("live", "RTDB Live"))
+                    .catch((err) => {
+                        console.warn("Realtime DB seed warning:", err);
+                        setRtdbBadge("warn", "Check RTDB Rules");
+                    });
+            }
+        }, (err) => {
+            console.warn("Realtime DB listener warning:", err);
+            setRtdbBadge("warn", "Check RTDB Rules");
+        });
+    </script>
+
+    <!-- ALL JAVASCRIPT CODE INLINED -->
+    <script>
+        // 1. EMBEDDED USER DATABASE
+        // Admin: username "Lunar", password "0000"
+        // Default members password: "7777"
+        const familyUsersDB = [
+            { "name": "Lunar", "roleDesc": "Administrator", "role": "admin", "pass": "0000" },
+            { "name": "Sumesh", "roleDesc": "Sumesh's Family", "role": "member", "pass": "7777" },
+            { "name": "Lovely", "roleDesc": "Sumesh's Family", "role": "member", "pass": "7777" },
+            { "name": "Kaashi", "roleDesc": "Sumesh's Family", "role": "member", "pass": "7777" },
+            { "name": "Sasidharan", "roleDesc": "Sasidharan's Family", "role": "member", "pass": "7777" },
+            { "name": "Ajitha", "roleDesc": "Sasidharan's Family", "role": "member", "pass": "7777" }
+        ];
+
+        // 2. DIRECTORY MEMBERS DATA
+        let familyMembers = [
+            { id: 1, name: "Sumesh", headOfFamily: "Sumesh's Family", phone: "+919876543210", address: "https://www.google.com/maps", avatar: "mb-avatar/sumesh.jpg" },
+            { id: 2, name: "Lovely", headOfFamily: "Sumesh's Family", phone: "+919876543211", address: "https://www.google.com/maps", avatar: "mb-avatar/lovely.jpg" },
+            { id: 3, name: "Kaashi", headOfFamily: "Sumesh's Family", phone: "+919876543212", address: "https://www.google.com/maps", avatar: "mb-avatar/kaashi.jpg" },
+            { id: 4, name: "Sasidharan", headOfFamily: "Sasidharan's Family", phone: "+919876543213", address: "https://www.google.com/maps", avatar: "mb-avatar/sasidharan.jpg" },
+            { id: 5, name: "Ajitha", headOfFamily: "Sasidharan's Family", phone: "+919876543214", address: "https://www.google.com/maps", avatar: "mb-avatar/ajitha.jpg" }
+        ];
+
+        // Track custom family sections dynamically created
+        let customFamilies = ["Sumesh's Family", "Sasidharan's Family"];
+
+        // 3. EVENTS DATA
+        let familyEvents = [
+            { id: 1, title: "Annual Family Reunion", venue: "Grand Hotel Resort", agenda: "Get-together and dinner for all family members.", date: "Dec 25, 2026" }
+        ];
+
+        // 4. GALLERY DATA (Max 20 photos per folder)
+        let galleryFolders = ["Summer Gathering", "Holiday Celebration"];
+        let galleryPhotos = [
+            { id: 1, folder: "Summer Gathering", title: "Summer Gathering #1", url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, folder: "Holiday Celebration", title: "Holiday Celebration #1", url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        let currentUser = null;
+        let toastTimeout = null;
+        let selectedFamilyFilter = "ALL";
+        let cloudDb = null;
+        let cloudDocRef = null;
+        let cloudAppId = "family-hub-default";
+        let isApplyingCloudSnapshot = false;
+
+        function buildHubPayload() {
+            return {
+                familyUsersDB,
+                familyMembers,
+                customFamilies,
+                familyEvents,
+                galleryFolders,
+                galleryPhotos,
+                updatedAt: Date.now()
+            };
+        }
+        window.buildHubPayload = buildHubPayload;
+
+        // SAVE & SYNC HUB STATE (LOCAL + CLOUD FIRESTORE IF CONFIGURED + RTDB)
+        function syncHubState(skipCloudWrite = false) {
+            try {
+                const payload = buildHubPayload();
+                localStorage.setItem('familyHub_CompleteState_v1', JSON.stringify(payload));
+
+                if (!skipCloudWrite && !isApplyingCloudSnapshot) {
+                    if (typeof window.pushHubStateToRealtimeDb === 'function') {
+                        window.pushHubStateToRealtimeDb(payload);
+                    }
+                    if (cloudDb && cloudDocRef) {
+                        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js")
+                            .then(({ setDoc }) => {
+                                return setDoc(cloudDocRef, {
+                                    stateJson: JSON.stringify(payload),
+                                    updatedAt: Date.now()
+                                }, { merge: true });
+                            })
+                            .catch(err => console.warn("Cloud write skipped:", err));
+                    }
+                }
+            } catch (err) {
+                console.warn("State sync warning:", err);
+            }
+        }
+
+        // APPLY LOADED / SYNCED STATE TO ARRAYS & UI
+        function applySyncedPayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return;
+            isApplyingCloudSnapshot = true;
+            try {
+                if (Array.isArray(parsed.familyUsersDB) && parsed.familyUsersDB.length > 0) {
+                    familyUsersDB.length = 0;
+                    parsed.familyUsersDB.forEach(u => familyUsersDB.push(u));
+                }
+                if (Array.isArray(parsed.familyMembers)) familyMembers = parsed.familyMembers;
+                if (Array.isArray(parsed.customFamilies)) customFamilies = parsed.customFamilies;
+                if (Array.isArray(parsed.familyEvents)) familyEvents = parsed.familyEvents;
+                if (Array.isArray(parsed.galleryFolders)) galleryFolders = parsed.galleryFolders;
+                if (Array.isArray(parsed.galleryPhotos)) galleryPhotos = parsed.galleryPhotos;
+
+                if (currentUser) {
+                    const refreshedUser = familyUsersDB.find(
+                        u => u.name.trim().toLowerCase() === currentUser.name.trim().toLowerCase()
+                    );
+                    if (refreshedUser) {
+                        if (refreshedUser.role === 'banned') {
+                            handleLogout();
+                            return;
+                        }
+                        currentUser = refreshedUser;
+                        const userDisplay = document.getElementById('userDisplay');
+                        const roleDisplay = document.getElementById('roleDisplay');
+                        if (userDisplay) userDisplay.innerText = currentUser.name;
+                        if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
+                    }
+                    renderDirectory();
+                    renderEvents();
+                    populateFolderSelect();
+                    renderGallery();
+                    renderAdminTable();
+                    populateEditAvatarDropdown();
+                }
+            } finally {
+                isApplyingCloudSnapshot = false;
+            }
+        }
+        window.applySyncedPayload = applySyncedPayload;
+
+        // LOAD LOCAL CACHE IMMEDIATELY
+        function loadLocalCachedState() {
+            try {
+                const raw = localStorage.getItem('familyHub_CompleteState_v1');
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                applySyncedPayload(parsed);
+            } catch (err) {
+                console.warn("Local cache load error:", err);
+            }
+        }
+
+        // INITIALIZE OPTIONAL CLOUD SYNC WHEN ENVIRONMENT CONFIG IS PRESENT
+        async function initCloudSync() {
+            const badge = document.getElementById('cloudSyncBadge');
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+                    if (badge) {
+                        badge.innerHTML = '<i class="fa-solid fa-hard-drive mr-1"></i> Local Storage Active';
+                    }
+                    return;
+                }
+
+                const firebaseConfig = JSON.parse(__firebase_config);
+                cloudAppId = typeof __app_id !== 'undefined' && __app_id ? __app_id : 'family-hub-default';
+
+                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+                const { getAuth, signInAnonymously, signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                const { getFirestore, doc, setDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                cloudDb = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                cloudDocRef = doc(cloudDb, 'artifacts', cloudAppId, 'public', 'data', 'familyHubState', 'main');
+
+                if (badge) {
+                    badge.innerHTML = '<i class="fa-solid fa-cloud-check mr-1"></i> Cloud Sync Live';
+                    badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
+                }
+
+                onSnapshot(cloudDocRef, (snap) => {
+                    if (snap.exists()) {
+                        const data = snap.data();
+                        if (data && data.stateJson) {
+                            const remoteState = JSON.parse(data.stateJson);
+                            localStorage.setItem('familyHub_CompleteState_v1', data.stateJson);
+                            applySyncedPayload(remoteState);
+                        }
+                    } else {
+                        setDoc(cloudDocRef, {
+                            stateJson: JSON.stringify(buildHubPayload()),
+                            updatedAt: Date.now()
+                        }, { merge: true }).catch(() => {});
+                    }
+                }, (err) => {
+                    console.warn("Cloud listener error:", err);
+                });
+            } catch (err) {
+                console.warn("Cloud sync setup skipped:", err);
+                if (badge) {
+                    badge.innerHTML = '<i class="fa-solid fa-hard-drive mr-1"></i> Local Storage Active';
+                }
+            }
+        }
+
+        // TOAST HELPER
+        function showToast(message) {
+            try {
+                const banner = document.getElementById('toastBanner');
+                const msgEl = document.getElementById('toastMessage');
+                if (!banner || !msgEl) return;
+
+                msgEl.innerText = message;
+                banner.classList.remove('hidden');
+
+                if (toastTimeout) clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    banner.classList.add('hidden');
+                }, 3500);
+            } catch (err) {
+                console.error("Toast error:", err);
+            }
+        }
+
+        // INLINE GALLERY STATUS HELPER
+        function setGalleryStatus(message, isError) {
+            const statusEl = document.getElementById('galleryStatusMsg');
+            if (!statusEl) return;
+
+            if (!message) {
+                statusEl.classList.add('hidden');
+                statusEl.innerText = '';
+                return;
+            }
+
+            statusEl.classList.remove('hidden', 'bg-rose-50', 'text-rose-700', 'border-rose-200', 'bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+            if (isError) {
+                statusEl.classList.add('bg-rose-50', 'text-rose-700', 'border-rose-200');
+            } else {
+                statusEl.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+            }
+            statusEl.innerText = message;
+        }
+
+        // LOGIN SUBMIT WITH BAN WARNING
+        function handleLoginSubmit(event) {
+            try {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                const usernameEl = document.getElementById('usernameInput');
+                const passwordEl = document.getElementById('passwordInput');
+                const errorEl = document.getElementById('loginError');
+
+                if (!usernameEl || !passwordEl) return false;
+
+                const enteredName = usernameEl.value.trim();
+                const enteredPass = passwordEl.value.trim();
+
+                const foundUser = familyUsersDB.find(
+                    u => u.name.trim().toLowerCase() === enteredName.toLowerCase() && String(u.pass).trim() === enteredPass
+                );
+
+                if (!foundUser) {
+                    if (errorEl) {
+                        errorEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Invalid name or password!';
+                        errorEl.classList.remove('hidden');
+                    }
+                    return false;
+                }
+
+                if (foundUser.role === 'banned') {
+                    if (errorEl) {
+                        errorEl.innerHTML = '<i class="fa-solid fa-ban mr-1 font-bold"></i> Account Banned! You have been restricted by the administrator.';
+                        errorEl.classList.remove('hidden');
+                    }
+                    return false;
+                }
+
+                currentUser = foundUser;
+                if (errorEl) errorEl.classList.add('hidden');
+
+                const loginModal = document.getElementById('loginModal');
+                const appContainer = document.getElementById('appContainer');
+
+                if (loginModal) {
+                    loginModal.style.display = 'none';
+                    loginModal.classList.add('hidden');
+                }
+                if (appContainer) {
+                    appContainer.classList.remove('blurred-content');
+                    appContainer.style.filter = 'none';
+                    appContainer.style.pointerEvents = 'auto';
+                }
+
+                const userDisplay = document.getElementById('userDisplay');
+                const roleDisplay = document.getElementById('roleDisplay');
+                if (userDisplay) userDisplay.innerText = currentUser.name;
+                if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
+
+                if (currentUser.role === 'admin') {
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                } else {
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                }
+
+                initApp();
+                return false;
+            } catch (err) {
+                console.error("Login error:", err);
+                return false;
+            }
+        }
+
+        // LOGOUT
+        function handleLogout() {
+            currentUser = null;
+            const loginModal = document.getElementById('loginModal');
+            const appContainer = document.getElementById('appContainer');
+
+            if (loginModal) {
+                loginModal.style.display = 'flex';
+                loginModal.classList.remove('hidden');
+            }
+            if (appContainer) {
+                appContainer.classList.add('blurred-content');
+            }
+
+            const uInput = document.getElementById('usernameInput');
+            const pInput = document.getElementById('passwordInput');
+            if (uInput) uInput.value = '';
+            if (pInput) pInput.value = '';
+            const errorEl = document.getElementById('loginError');
+            if (errorEl) errorEl.classList.add('hidden');
+        }
+
+        // TOGGLE CUSTOM FAMILY HEAD INPUT WHEN "Other Family" IS SELECTED
+        function toggleCustomFamilyInput(mode) {
+            const selectEl = document.getElementById(mode === 'new' ? 'newMemHead' : 'editMemHead');
+            const wrapperEl = document.getElementById(mode === 'new' ? 'newCustomFamilyWrapper' : 'editCustomFamilyWrapper');
+            const inputEl = document.getElementById(mode === 'new' ? 'newCustomFamilyHead' : 'editCustomFamilyHead');
+
+            if (selectEl && wrapperEl) {
+                if (selectEl.value === 'Other Family') {
+                    wrapperEl.classList.remove('hidden');
+                    if (inputEl) inputEl.required = true;
+                } else {
+                    wrapperEl.classList.add('hidden');
+                    if (inputEl) {
+                        inputEl.required = false;
+                        inputEl.value = '';
+                    }
+                }
+            }
+        }
+
+        // FORMAT FAMILY NAME FROM HEAD INPUT
+        function resolveFamilySection(selectedHead, customHeadRaw) {
+            if (selectedHead === 'Other Family') {
+                const cleanName = (customHeadRaw || '').trim();
+                if (!cleanName) return "Other Family";
+                if (/'s\s+Family$/i.test(cleanName)) {
+                    return cleanName;
+                }
+                const suffix = cleanName.toLowerCase().endsWith('s') ? "'" : "'s";
+                return `${cleanName}${suffix} Family`;
+            }
+            return selectedHead;
+        }
+
+        // POPULATE MEMBER DROPDOWN FOR AVATAR EDITING
+        function populateEditAvatarDropdown() {
+            const select = document.getElementById('editAvatarMemberSelect');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Choose Member --</option>' +
+                familyMembers.map(m => `<option value="${m.id}">${m.name} (${m.headOfFamily})</option>`).join('');
+            if (currentVal && familyMembers.some(m => String(m.id) === String(currentVal))) {
+                select.value = currentVal;
+            }
+        }
+
+        // LOAD SELECTED MEMBER'S CURRENT AVATAR INTO INPUT
+        function loadMemberAvatarToEdit(id) {
+            const input = document.getElementById('editAvatarPathInput');
+            if (!input) return;
+            if (!id) {
+                input.value = '';
+                return;
+            }
+            const member = familyMembers.find(m => String(m.id) === String(id));
+            if (member) {
+                input.value = member.avatar || `mb-avatar/${member.name.toLowerCase()}.jpg`;
+            }
+        }
+
+        // SAVE UPDATED AVATAR FOR MEMBER
+        function handleEditAvatarSubmit(e) {
+            try {
+                e.preventDefault();
+                const id = document.getElementById('editAvatarMemberSelect').value;
+                const newAvatar = document.getElementById('editAvatarPathInput').value.trim();
+
+                if (!id || !newAvatar) return false;
+
+                const member = familyMembers.find(m => String(m.id) === String(id));
+                if (member) {
+                    member.avatar = newAvatar;
+                    showToast(`Avatar updated for "${member.name}"!`);
+                    renderDirectory();
+                    syncHubState();
+                }
+                return false;
+            } catch (err) {
+                console.error("Avatar update error:", err);
+                return false;
+            }
+        }
+
+        // ADD NEW MEMBER FROM ADMIN PORTAL WITH MANUAL PASSWORD
+        function handleAddMemberSubmit(e) {
+            try {
+                e.preventDefault();
+                const name = document.getElementById('newMemName').value.trim();
+                const manualPass = document.getElementById('newMemPass').value.trim() || '7777';
+                const selectedHead = document.getElementById('newMemHead').value;
+                const customHead = document.getElementById('newCustomFamilyHead') ? document.getElementById('newCustomFamilyHead').value.trim() : '';
+                const phone = document.getElementById('newMemPhone').value.trim();
+                const address = document.getElementById('newMemAddress').value.trim() || 'https://www.google.com/maps';
+                const role = document.getElementById('newMemRole').value;
+                const avatar = document.getElementById('newMemAvatar').value.trim() || `mb-avatar/${name.toLowerCase()}.jpg`;
+
+                if (!name) return false;
+
+                const finalFamilyGroup = resolveFamilySection(selectedHead, customHead);
+
+                if (!customFamilies.includes(finalFamilyGroup)) {
+                    customFamilies.push(finalFamilyGroup);
+                }
+
+                // Add to Directory
+                familyMembers.push({
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    name: name,
+                    headOfFamily: finalFamilyGroup,
+                    phone: phone,
+                    address: address,
+                    avatar: avatar
+                });
+
+                // Add or Update in User Login DB using manual password
+                const existingUser = familyUsersDB.find(u => u.name.trim().toLowerCase() === name.toLowerCase());
+                if (!existingUser) {
+                    familyUsersDB.push({
+                        name: name,
+                        roleDesc: finalFamilyGroup,
+                        role: role,
+                        pass: manualPass
+                    });
+                } else {
+                    existingUser.role = role;
+                    existingUser.roleDesc = finalFamilyGroup;
+                    existingUser.pass = manualPass;
+                }
+
+                showToast(`Member "${name}" added with password "${manualPass}"!`);
+                e.target.reset();
+                toggleCustomFamilyInput('new');
+
+                renderDirectory();
+                renderAdminTable();
+                populateEditAvatarDropdown();
+                syncHubState();
+                return false;
+            } catch (err) {
+                console.error("Add member error:", err);
+                return false;
+            }
+        }
+
+        // DELETE MEMBER & LOGIN CREDENTIAL (ADMIN ONLY)
+        function handleDeleteMember(userName) {
+            try {
+                if (!currentUser || currentUser.role !== 'admin') return;
+                if (!userName) return;
+
+                if (currentUser.name && currentUser.name.trim().toLowerCase() === userName.trim().toLowerCase()) {
+                    showToast("You cannot delete your currently logged-in admin account!");
+                    return;
+                }
+
+                const userIdx = familyUsersDB.findIndex(
+                    u => u.name.trim().toLowerCase() === userName.trim().toLowerCase()
+                );
+                if (userIdx !== -1) {
+                    familyUsersDB.splice(userIdx, 1);
+                }
+
+                familyMembers = familyMembers.filter(
+                    m => m.name.trim().toLowerCase() !== userName.trim().toLowerCase()
+                );
+
+                showToast(`Member "${userName}" deleted!`);
+                renderDirectory();
+                renderAdminTable();
+                populateEditAvatarDropdown();
+                syncHubState();
+            } catch (err) {
+                console.error("Delete member error:", err);
+            }
+        }
+
+        // SELECT FAMILY SORT / FILTER BUTTON
+        function selectFamilyFilter(familyName) {
+            selectedFamilyFilter = familyName;
+            renderDirectory();
+        }
+
+        // RENDER FAMILY SORT BUTTONS ("All" + each family name)
+        function renderFamilySortButtons() {
+            const container = document.getElementById('familySortButtons');
+            if (!container) return;
+
+            const familySet = new Set(customFamilies);
+            familyMembers.forEach(m => {
+                if (m.headOfFamily) familySet.add(m.headOfFamily);
+            });
+
+            const familyNames = Array.from(familySet);
+            if (!familyNames.includes(selectedFamilyFilter) && selectedFamilyFilter !== "ALL") {
+                selectedFamilyFilter = "ALL";
+            }
+
+            const allBtnClass = selectedFamilyFilter === "ALL"
+                ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition"
+                : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
+
+            let html = `<button type="button" onclick="selectFamilyFilter('ALL')" class="${allBtnClass}">All</button>`;
+
+            html += familyNames.map(fam => {
+                const isActive = selectedFamilyFilter === fam;
+                const cls = isActive
+                    ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition"
+                    : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
+                const safeFam = fam.replace(/'/g, "\\'");
+                return `<button type="button" onclick="selectFamilyFilter('${safeFam}')" class="${cls}">${fam}</button>`;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        // UPDATE USER ROLE DIRECTLY FROM ADMIN TABLE
+        function updateUserRole(userName, newRole) {
+            const user = familyUsersDB.find(u => u.name === userName);
+            if (user) {
+                user.role = newRole;
+                showToast(`Role for ${userName} updated to ${newRole.toUpperCase()}`);
+                renderAdminTable();
+                syncHubState();
+            }
+        }
+
+        // POST NEW EVENT
+        function handleAddEvent(e) {
+            try {
+                e.preventDefault();
+                const title = document.getElementById('evTitle').value.trim();
+                const date = document.getElementById('evDate').value.trim();
+                const venue = document.getElementById('evVenue').value.trim();
+                const agenda = document.getElementById('evAgenda').value.trim();
+
+                if (!title) return false;
+
+                const newEvent = {
+                    id: Date.now(),
+                    title,
+                    date,
+                    venue,
+                    agenda
+                };
+
+                familyEvents.unshift(newEvent);
+                showToast("New Function Broadcasted!");
+                e.target.reset();
+                renderEvents();
+                syncHubState();
+                return false;
+            } catch (err) {
+                console.error("Add event error:", err);
+                return false;
+            }
+        }
+
+        // SHARE FUNCTION NOTIFICATION TO WHATSAPP
+        function shareToWhatsApp(title, date, venue, agenda) {
+            const message = `*FAMILY FUNCTION ANNOUNCEMENT*\n\n*Event:* ${title}\n*Date:* ${date}\n*Venue:* ${venue}\n*Details:* ${agenda}\n\nCheck full details on our Family Portal!`;
+            const encodedUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(encodedUrl, '_blank');
+        }
+
+        // DELETE EXISTING FUNCTION / NOTIFICATION (ADMIN ONLY)
+        function handleDeleteEvent(eventId) {
+            if (!currentUser || currentUser.role !== 'admin') return;
+            familyEvents = familyEvents.filter(ev => ev.id !== eventId);
+            showToast("Notification / Function deleted!");
+            renderEvents();
+            syncHubState();
+        }
+
+        // TAB SWITCHING (MOBILE & DESKTOP SYNC)
+        function switchTab(tabId) {
+            ['directory', 'events', 'gallery', 'admin'].forEach(tab => {
+                const section = document.getElementById(`section-${tab}`);
+                const btn = document.getElementById(`tab-${tab}`);
+                const mobBtn = document.getElementById(`mob-tab-${tab}`);
+
+                if (section) section.classList.add('hidden');
+
+                if (btn) {
+                    btn.classList.remove('bg-white/20', 'text-white');
+                    btn.classList.add('text-pastel-100');
+                }
+                if (mobBtn) {
+                    mobBtn.classList.remove('text-pastel-700', 'font-bold');
+                    mobBtn.classList.add('text-slate-500');
+                }
+            });
+
+            const activeSection = document.getElementById(`section-${tabId}`);
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            const activeMobBtn = document.getElementById(`mob-tab-${tabId}`);
+
+            if (activeSection) activeSection.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white/20', 'text-white');
+                activeBtn.classList.remove('text-pastel-100');
+            }
+            if (activeMobBtn) {
+                activeMobBtn.classList.add('text-pastel-700', 'font-bold');
+                activeMobBtn.classList.remove('text-slate-500');
+            }
+        }
+
+        // INITIALIZE APP
+        function initApp() {
+            renderDirectory();
+            renderEvents();
+            populateFolderSelect();
+            renderGallery();
+            renderAdminTable();
+            populateEditAvatarDropdown();
+        }
+
+        // RENDER DIRECTORY
+        function renderDirectory() {
+            renderFamilySortButtons();
+
+            const grid = document.getElementById('directoryGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const households = {};
+            customFamilies.forEach(fam => {
+                households[fam] = [];
+            });
+
+            familyMembers.forEach(member => {
+                if (!households[member.headOfFamily]) {
+                    households[member.headOfFamily] = [];
+                }
+                households[member.headOfFamily].push(member);
+            });
+
+            const entries = Object.entries(households).filter(([head]) =>
+                selectedFamilyFilter === "ALL" || head === selectedFamilyFilter
+            );
+
+            for (const [head, members] of entries) {
+                const groupEl = document.createElement('div');
+                groupEl.className = "space-y-4";
+                groupEl.innerHTML = `
+                    <h3 class="text-lg font-bold font-display text-pastel-800 border-b border-slate-200 pb-2 flex items-center justify-between">
+                        <span>${head}</span>
+                        <span class="text-xs font-normal text-slate-400">${members.length} member(s)</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${members.length === 0
+                            ? `<p class="text-xs text-slate-400 italic py-2 col-span-full">No members added to ${head} yet.</p>`
+                            : members.map(m => {
+                                const initial = m.name.charAt(0).toUpperCase();
+                                const avatarSrc = m.avatar || `mb-avatar/${m.name.toLowerCase()}.jpg`;
+                                return `
+                                    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex items-start justify-between gap-3">
+                                        <div class="flex items-start gap-3.5 min-w-0">
+                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-slate-200 relative">
+                                                <img src="${avatarSrc}" alt="${m.name}" class="w-full h-full object-cover aspect-square" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                                <span class="hidden">${initial}</span>
+                                            </div>
+                                            <div class="space-y-1 min-w-0">
+                                                <h4 class="font-bold text-slate-800 truncate">${m.name}</h4>
+                                                <a href="tel:${m.phone}" class="text-xs text-pastel-600 hover:underline block">
+                                                    <i class="fa-solid fa-phone mr-1"></i> ${m.phone}
+                                                </a>
+                                                <a href="${m.address}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-pastel-600 block truncate">
+                                                    <i class="fa-solid fa-location-dot mr-1"></i> Open Google Maps
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')
+                        }
+                    </div>
+                `;
+                grid.appendChild(groupEl);
+            }
+
+            filterDirectory();
+        }
+
+        function filterDirectory() {
+            const searchInput = document.getElementById('directorySearch');
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
+            document.querySelectorAll('#directoryGrid > div').forEach(group => {
+                const text = group.innerText.toLowerCase();
+                group.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        // RENDER EVENTS WITH WHATSAPP SHARE BUTTON
+        function renderEvents() {
+            const feed = document.getElementById('eventsFeed');
+            if (!feed) return;
+            const isAdmin = currentUser && currentUser.role === 'admin';
+            feed.innerHTML = familyEvents.map(e => {
+                const safeTitle = e.title.replace(/'/g, "\\'");
+                const safeDate = e.date.replace(/'/g, "\\'");
+                const safeVenue = e.venue.replace(/'/g, "\\'");
+                const safeAgenda = e.agenda.replace(/'/g, "\\'");
+                return `
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 class="text-xl font-bold font-display text-slate-800">${e.title}</h3>
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                    <span class="text-xs font-semibold px-2.5 py-1 bg-pastel-100 text-pastel-700 rounded-lg">${e.date}</span>
+                                    ${isAdmin ? `
+                                        <button onclick="handleDeleteEvent(${e.id})" title="Delete Notification" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition">
+                                            <i class="fa-solid fa-trash-can text-sm"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-600"><i class="fa-solid fa-location-dot text-slate-400 mr-2"></i><strong>Venue:</strong> ${e.venue}</p>
+                            <p class="text-sm text-slate-500">${e.agenda}</p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-100">
+                            <button onclick="shareToWhatsApp('${safeTitle}', '${safeDate}', '${safeVenue}', '${safeAgenda}')" class="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-base"></i> Share to WhatsApp Group
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // POPULATE FOLDER DROPDOWN IN GALLERY UPLOAD
+        function populateFolderSelect() {
+            const select = document.getElementById('galFolder');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = galleryFolders.map(f => `<option value="${f}">${f}</option>`).join('');
+            if (currentVal && galleryFolders.includes(currentVal)) {
+                select.value = currentVal;
+            }
+        }
+
+        // CREATE NEW FOLDER IN GALLERY
+        function handleCreateFolder(e) {
+            try {
+                e.preventDefault();
+                const inputEl = document.getElementById('newFolderName');
+                if (!inputEl) return false;
+
+                const folderName = inputEl.value.trim();
+                if (!folderName) return false;
+
+                if (galleryFolders.some(f => f.toLowerCase() === folderName.toLowerCase())) {
+                    setGalleryStatus(`Folder "${folderName}" already exists!`, true);
+                    return false;
+                }
+
+                galleryFolders.push(folderName);
+                populateFolderSelect();
+                const galSelect = document.getElementById('galFolder');
+                if (galSelect) galSelect.value = folderName;
+
+                setGalleryStatus(`New folder "${folderName}" created!`, false);
+                showToast(`New folder "${folderName}" created!`);
+                inputEl.value = '';
+                renderGallery();
+                syncHubState();
+                return false;
+            } catch (err) {
+                console.error("Create folder error:", err);
+                return false;
+            }
+        }
+
+        // HANDLE PHOTO UPLOAD WITH MAX 20 LIMIT PER FOLDER
+        function handleUploadPhoto(e) {
+            try {
+                e.preventDefault();
+                const folder = document.getElementById('galFolder').value.trim();
+                const title = document.getElementById('galTitle').value.trim();
+                const url = document.getElementById('galUrl').value.trim();
+
+                if (!folder || !title || !url) return false;
+
+                const photosInFolder = galleryPhotos.filter(p => p.folder.toLowerCase() === folder.toLowerCase());
+                if (photosInFolder.length >= 20) {
+                    setGalleryStatus(`Limit reached: Folder "${folder}" already has the maximum of 20 photos.`, true);
+                    showToast(`Max 20 photos allowed in "${folder}"!`);
+                    return false;
+                }
+
+                galleryPhotos.push({
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    folder: folder,
+                    title: title,
+                    url: url
+                });
+
+                setGalleryStatus(`Photo "${title}" added to "${folder}" (${photosInFolder.length + 1}/20).`, false);
+                showToast(`Photo added to "${folder}"!`);
+                document.getElementById('galTitle').value = '';
+                document.getElementById('galUrl').value = '';
+                renderGallery();
+                syncHubState();
+                return false;
+            } catch (err) {
+                console.error("Upload photo error:", err);
+                return false;
+            }
+        }
+
+        // DELETE ENTIRE GALLERY FOLDER AND ITS PHOTOS (ADMIN ONLY)
+        function handleDeleteFolder(folderName) {
+            if (!currentUser || currentUser.role !== 'admin') return;
+
+            galleryFolders = galleryFolders.filter(f => f !== folderName);
+            galleryPhotos = galleryPhotos.filter(p => (p.folder || 'General') !== folderName);
+
+            populateFolderSelect();
+            renderGallery();
+            setGalleryStatus(`Folder "${folderName}" and its photos deleted!`, false);
+            showToast(`Folder "${folderName}" and its photos deleted!`);
+            syncHubState();
+        }
+
+        // RENDER GALLERY WITH 20 PHOTO LIMIT BADGE
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            if (!grid) return;
+            grid.className = "space-y-6 sm:space-y-8";
+
+            const isAdmin = currentUser && currentUser.role === 'admin';
+            const folderNames = new Set(galleryFolders);
+            galleryPhotos.forEach(photo => folderNames.add(photo.folder || 'General'));
+
+            const grouped = {};
+            folderNames.forEach(f => grouped[f] = []);
+            galleryPhotos.forEach(photo => {
+                const f = photo.folder || 'General';
+                if (!grouped[f]) grouped[f] = [];
+                grouped[f].push(photo);
+            });
+
+            grid.innerHTML = Object.entries(grouped).map(([folderName, photos]) => {
+                const safeFolder = folderName.replace(/'/g, "\\'");
+                return `
+                <div class="space-y-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <i class="fa-solid fa-folder-open text-pastel-600 text-lg sm:text-xl flex-shrink-0"></i>
+                            <h3 class="text-base sm:text-lg font-bold font-display text-slate-800 truncate">${folderName}</h3>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <span class="text-xs font-bold px-2.5 py-1 ${photos.length >= 20 ? 'bg-rose-100 text-rose-700' : 'bg-pastel-100 text-pastel-700'} rounded-full">
+                                ${photos.length}/20 Photos
+                            </span>
+                            ${isAdmin ? `
+                                <button type="button" onclick="handleDeleteFolder('${safeFolder}')" title="Delete Folder & All Photos" class="px-2.5 py-1 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg transition flex items-center gap-1">
+                                    <i class="fa-solid fa-trash-can"></i> Delete Folder
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    ${photos.length === 0
+                        ? `<p class="text-xs text-slate-400 italic py-2">Folder "${folderName}" created (0/20 photos).</p>`
+                        : `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                            ${photos.map(p => `
+                                <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200 shadow-sm group">
+                                    <img src="${p.url}" alt="${p.title}" class="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
+                                    <div class="p-2.5 bg-white border-t border-slate-100">
+                                        <h4 class="font-bold text-xs sm:text-sm text-slate-800 truncate">${p.title}</h4>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>`
+                    }
+                </div>
+            `;
+            }).join('');
+        }
+
+        // RENDER ADMIN TABLE WITH ROLE SWITCHER & DELETE BUTTON
+        function renderAdminTable() {
+            const table = document.getElementById('adminRoleTable');
+            if (!table) return;
+            const isAdmin = currentUser && currentUser.role === 'admin';
+            table.innerHTML = familyUsersDB.map(u => {
+                const safeName = u.name.replace(/'/g, "\\'");
+                const isSelf = currentUser && currentUser.name && currentUser.name.trim().toLowerCase() === u.name.trim().toLowerCase();
+                return `
+                <tr>
+                    <td class="p-3 font-semibold text-slate-800">${u.name}</td>
+                    <td class="p-3 text-slate-500">${u.roleDesc}</td>
+                    <td class="p-3 font-mono text-xs text-slate-600">${u.pass}</td>
+                    <td class="p-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-full ${u.role === 'admin' ? 'bg-amber-100 text-amber-800' : u.role === 'banned' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'}">
+                            ${u.role.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="p-3 text-right">
+                        <div class="inline-flex items-center justify-end gap-2">
+                            <select onchange="updateUserRole('${safeName}', this.value)" class="p-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none">
+                                <option value="member" ${u.role === 'member' ? 'selected' : ''}>Member</option>
+                                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                <option value="banned" ${u.role === 'banned' ? 'selected' : ''}>Banned</option>
+                            </select>
+                            ${isAdmin && !isSelf ? `
+                                <button type="button" onclick="handleDeleteMember('${safeName}')" title="Delete Member" class="px-2.5 py-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg transition inline-flex items-center gap-1">
+                                    <i class="fa-solid fa-trash-can"></i> Delete
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `;
+            }).join('');
+        }
+
+        // Load saved local cache & initialize cloud sync if available
+        loadLocalCachedState();
+        initCloudSync();
+    </script>
+</body>
+</html>
