@@ -367,9 +367,14 @@
                             <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
                                 <i class="fa-solid fa-users-gear text-pastel-600"></i> Registered Users & Roles
                             </h3>
-                            <span id="cloudSyncBadge" class="self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200">
-                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Sync Ready
-                            </span>
+                            <div class="flex items-center gap-2 self-start sm:self-auto">
+                                <button type="button" onclick="loadFromGoogleSheet(true)" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
+                                    <i class="fa-solid fa-rotate mr-1"></i> Refresh Sheet
+                                </button>
+                                <span id="cloudSyncBadge" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200">
+                                    <i class="fa-solid fa-table mr-1"></i> Google Sheet Ready
+                                </span>
+                            </div>
                         </div>
                         <div class="overflow-x-auto rounded-xl border border-slate-200">
                             <table class="w-full text-left border-collapse min-w-[600px]">
@@ -398,77 +403,12 @@
         <span id="toastMessage"></span>
     </div>
 
-    <!-- FIREBASE REALTIME DATABASE MODULE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAcSmTky-zP38nDZuHDo6dUA7Fnx8u1EwE",
-            authDomain: "pulimoottil-members.firebaseapp.com",
-            databaseURL: "https://pulimoottil-members-default-rtdb.firebaseio.com",
-            projectId: "pulimoottil-members",
-            storageBucket: "pulimoottil-members.firebasestorage.app",
-            messagingSenderId: "74118886767",
-            appId: "1:74118886767:web:07571b23a8335de30b249a"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const rtdb = getDatabase(app);
-        const hubStateRef = ref(rtdb, "familyHub/state");
-
-        function setRtdbBadge(mode, label) {
-            const badge = document.getElementById("cloudSyncBadge");
-            if (!badge) return;
-            if (mode === "live") {
-                badge.innerHTML = `<i class="fa-solid fa-cloud-check mr-1"></i> ${label}`;
-                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
-            } else if (mode === "warn") {
-                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${label}`;
-                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200";
-            }
-        }
-
-        window.pushHubStateToRealtimeDb = function(payload) {
-            if (!payload || typeof payload !== "object") return;
-            set(hubStateRef, payload)
-                .then(() => setRtdbBadge("live", "RTDB Synced"))
-                .catch((err) => {
-                    console.warn("Realtime DB write warning:", err);
-                    setRtdbBadge("warn", "Check RTDB Rules");
-                });
-        };
-
-        onValue(hubStateRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const remotePayload = snapshot.val();
-                if (remotePayload && typeof remotePayload === "object") {
-                    localStorage.setItem("familyHub_CompleteState_v1", JSON.stringify(remotePayload));
-                    if (typeof window.applySyncedPayload === "function") {
-                        window.applySyncedPayload(remotePayload);
-                    }
-                    setRtdbBadge("live", "RTDB Live");
-                }
-            } else if (typeof window.buildHubPayload === "function") {
-                const initialPayload = window.buildHubPayload();
-                set(hubStateRef, initialPayload)
-                    .then(() => setRtdbBadge("live", "RTDB Live"))
-                    .catch((err) => {
-                        console.warn("Realtime DB seed warning:", err);
-                        setRtdbBadge("warn", "Check RTDB Rules");
-                    });
-            }
-        }, (err) => {
-            console.warn("Realtime DB listener warning:", err);
-            setRtdbBadge("warn", "Check RTDB Rules");
-        });
-    </script>
-
-    <!-- ALL JAVASCRIPT CODE INLINED -->
+    <!-- ALL JAVASCRIPT CODE INLINED & GOOGLE SHEETS SYNC -->
     <script>
+        // നിങ്ങളുടെ Google Apps Script Web App URL ഇവിടെ നൽകുക
+        const GOOGLE_SHEET_WEBAPP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
         // 1. EMBEDDED USER DATABASE
-        // Admin: username "Lunar", password "0000"
-        // Default members password: "7777"
         const familyUsersDB = [
             { "name": "Lunar", "roleDesc": "Administrator", "role": "admin", "pass": "0000" },
             { "name": "Sumesh", "roleDesc": "Sumesh's Family", "role": "member", "pass": "7777" },
@@ -487,7 +427,6 @@
             { id: 5, name: "Ajitha", headOfFamily: "Sasidharan's Family", phone: "+919876543214", address: "https://www.google.com/maps", avatar: "mb-avatar/ajitha.jpg" }
         ];
 
-        // Track custom family sections dynamically created
         let customFamilies = ["Sumesh's Family", "Sasidharan's Family"];
 
         // 3. EVENTS DATA
@@ -495,7 +434,7 @@
             { id: 1, title: "Annual Family Reunion", venue: "Grand Hotel Resort", agenda: "Get-together and dinner for all family members.", date: "Dec 25, 2026" }
         ];
 
-        // 4. GALLERY DATA (Max 20 photos per folder)
+        // 4. GALLERY DATA
         let galleryFolders = ["Summer Gathering", "Holiday Celebration"];
         let galleryPhotos = [
             { id: 1, folder: "Summer Gathering", title: "Summer Gathering #1", url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=600&q=80" },
@@ -505,10 +444,22 @@
         let currentUser = null;
         let toastTimeout = null;
         let selectedFamilyFilter = "ALL";
-        let cloudDb = null;
-        let cloudDocRef = null;
-        let cloudAppId = "family-hub-default";
-        let isApplyingCloudSnapshot = false;
+        let isApplyingSheetSnapshot = false;
+
+        function setSheetBadge(mode, label) {
+            const badge = document.getElementById("cloudSyncBadge");
+            if (!badge) return;
+            if (mode === "live") {
+                badge.innerHTML = `<i class="fa-solid fa-table mr-1"></i> ${label}`;
+                badge.className = "text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
+            } else if (mode === "warn") {
+                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${label}`;
+                badge.className = "text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200";
+            } else {
+                badge.innerHTML = `<i class="fa-solid fa-table mr-1"></i> ${label}`;
+                badge.className = "text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200";
+            }
+        }
 
         function buildHubPayload() {
             return {
@@ -521,28 +472,68 @@
                 updatedAt: Date.now()
             };
         }
-        window.buildHubPayload = buildHubPayload;
 
-        // SAVE & SYNC HUB STATE (LOCAL + CLOUD FIRESTORE IF CONFIGURED + RTDB)
-        function syncHubState(skipCloudWrite = false) {
+        // PUSH CHANGES TO GOOGLE SHEET
+        function pushToGoogleSheet(payload) {
+            if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                setSheetBadge("warn", "Add Sheet URL");
+                return;
+            }
+
+            setSheetBadge("sync", "Saving to Sheet...");
+            fetch(GOOGLE_SHEET_WEBAPP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ state: payload })
+            })
+            .then(() => {
+                setSheetBadge("live", "Sheet Updated");
+            })
+            .catch((err) => {
+                console.warn("Google Sheet write error:", err);
+                setSheetBadge("warn", "Sheet Offline");
+            });
+        }
+
+        // LOAD LATEST DATA FROM GOOGLE SHEET
+        function loadFromGoogleSheet(showFeedback = false) {
+            if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                setSheetBadge("warn", "Add Sheet URL");
+                if (showFeedback) showToast("Please set GOOGLE_SHEET_WEBAPP_URL in code first!");
+                return;
+            }
+
+            setSheetBadge("sync", "Loading Sheet...");
+            fetch(`${GOOGLE_SHEET_WEBAPP_URL}?t=${Date.now()}`, { method: "GET" })
+                .then(res => res.json())
+                .then(data => {
+                    const parsed = data && data.state ? data.state : data;
+                    if (parsed && (Array.isArray(parsed.familyMembers) || Array.isArray(parsed.familyUsersDB))) {
+                        localStorage.setItem("familyHub_CompleteState_v1", JSON.stringify(parsed));
+                        applySyncedPayload(parsed);
+                        setSheetBadge("live", "Sheet Synced");
+                        if (showFeedback) showToast("Synced latest data from Google Sheet!");
+                    } else {
+                        setSheetBadge("live", "Sheet Ready");
+                        if (showFeedback) showToast("Sheet connected (no saved rows yet).");
+                    }
+                })
+                .catch((err) => {
+                    console.warn("Google Sheet read error:", err);
+                    setSheetBadge("warn", "Sheet Check Needed");
+                    if (showFeedback) showToast("Could not read Google Sheet. Check Web App access.");
+                });
+        }
+
+        // SAVE & SYNC HUB STATE
+        function syncHubState(skipSheetWrite = false) {
             try {
                 const payload = buildHubPayload();
                 localStorage.setItem('familyHub_CompleteState_v1', JSON.stringify(payload));
 
-                if (!skipCloudWrite && !isApplyingCloudSnapshot) {
-                    if (typeof window.pushHubStateToRealtimeDb === 'function') {
-                        window.pushHubStateToRealtimeDb(payload);
-                    }
-                    if (cloudDb && cloudDocRef) {
-                        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js")
-                            .then(({ setDoc }) => {
-                                return setDoc(cloudDocRef, {
-                                    stateJson: JSON.stringify(payload),
-                                    updatedAt: Date.now()
-                                }, { merge: true });
-                            })
-                            .catch(err => console.warn("Cloud write skipped:", err));
-                    }
+                if (!skipSheetWrite && !isApplyingSheetSnapshot) {
+                    pushToGoogleSheet(payload);
                 }
             } catch (err) {
                 console.warn("State sync warning:", err);
@@ -552,7 +543,7 @@
         // APPLY LOADED / SYNCED STATE TO ARRAYS & UI
         function applySyncedPayload(parsed) {
             if (!parsed || typeof parsed !== 'object') return;
-            isApplyingCloudSnapshot = true;
+            isApplyingSheetSnapshot = true;
             try {
                 if (Array.isArray(parsed.familyUsersDB) && parsed.familyUsersDB.length > 0) {
                     familyUsersDB.length = 0;
@@ -587,12 +578,10 @@
                     populateEditAvatarDropdown();
                 }
             } finally {
-                isApplyingCloudSnapshot = false;
+                isApplyingSheetSnapshot = false;
             }
         }
-        window.applySyncedPayload = applySyncedPayload;
 
-        // LOAD LOCAL CACHE IMMEDIATELY
         function loadLocalCachedState() {
             try {
                 const raw = localStorage.getItem('familyHub_CompleteState_v1');
@@ -604,67 +593,6 @@
             }
         }
 
-        // INITIALIZE OPTIONAL CLOUD SYNC WHEN ENVIRONMENT CONFIG IS PRESENT
-        async function initCloudSync() {
-            const badge = document.getElementById('cloudSyncBadge');
-            try {
-                if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-                    if (badge) {
-                        badge.innerHTML = '<i class="fa-solid fa-hard-drive mr-1"></i> Local Storage Active';
-                    }
-                    return;
-                }
-
-                const firebaseConfig = JSON.parse(__firebase_config);
-                cloudAppId = typeof __app_id !== 'undefined' && __app_id ? __app_id : 'family-hub-default';
-
-                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
-                const { getAuth, signInAnonymously, signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-                const { getFirestore, doc, setDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                cloudDb = getFirestore(app);
-
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                cloudDocRef = doc(cloudDb, 'artifacts', cloudAppId, 'public', 'data', 'familyHubState', 'main');
-
-                if (badge) {
-                    badge.innerHTML = '<i class="fa-solid fa-cloud-check mr-1"></i> Cloud Sync Live';
-                    badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
-                }
-
-                onSnapshot(cloudDocRef, (snap) => {
-                    if (snap.exists()) {
-                        const data = snap.data();
-                        if (data && data.stateJson) {
-                            const remoteState = JSON.parse(data.stateJson);
-                            localStorage.setItem('familyHub_CompleteState_v1', data.stateJson);
-                            applySyncedPayload(remoteState);
-                        }
-                    } else {
-                        setDoc(cloudDocRef, {
-                            stateJson: JSON.stringify(buildHubPayload()),
-                            updatedAt: Date.now()
-                        }, { merge: true }).catch(() => {});
-                    }
-                }, (err) => {
-                    console.warn("Cloud listener error:", err);
-                });
-            } catch (err) {
-                console.warn("Cloud sync setup skipped:", err);
-                if (badge) {
-                    badge.innerHTML = '<i class="fa-solid fa-hard-drive mr-1"></i> Local Storage Active';
-                }
-            }
-        }
-
-        // TOAST HELPER
         function showToast(message) {
             try {
                 const banner = document.getElementById('toastBanner');
@@ -683,7 +611,6 @@
             }
         }
 
-        // INLINE GALLERY STATUS HELPER
         function setGalleryStatus(message, isError) {
             const statusEl = document.getElementById('galleryStatusMsg');
             if (!statusEl) return;
@@ -703,7 +630,6 @@
             statusEl.innerText = message;
         }
 
-        // LOGIN SUBMIT WITH BAN WARNING
         function handleLoginSubmit(event) {
             try {
                 if (event) {
@@ -775,7 +701,6 @@
             }
         }
 
-        // LOGOUT
         function handleLogout() {
             currentUser = null;
             const loginModal = document.getElementById('loginModal');
@@ -797,7 +722,6 @@
             if (errorEl) errorEl.classList.add('hidden');
         }
 
-        // TOGGLE CUSTOM FAMILY HEAD INPUT WHEN "Other Family" IS SELECTED
         function toggleCustomFamilyInput(mode) {
             const selectEl = document.getElementById(mode === 'new' ? 'newMemHead' : 'editMemHead');
             const wrapperEl = document.getElementById(mode === 'new' ? 'newCustomFamilyWrapper' : 'editCustomFamilyWrapper');
@@ -817,7 +741,6 @@
             }
         }
 
-        // FORMAT FAMILY NAME FROM HEAD INPUT
         function resolveFamilySection(selectedHead, customHeadRaw) {
             if (selectedHead === 'Other Family') {
                 const cleanName = (customHeadRaw || '').trim();
@@ -831,7 +754,6 @@
             return selectedHead;
         }
 
-        // POPULATE MEMBER DROPDOWN FOR AVATAR EDITING
         function populateEditAvatarDropdown() {
             const select = document.getElementById('editAvatarMemberSelect');
             if (!select) return;
@@ -843,7 +765,6 @@
             }
         }
 
-        // LOAD SELECTED MEMBER'S CURRENT AVATAR INTO INPUT
         function loadMemberAvatarToEdit(id) {
             const input = document.getElementById('editAvatarPathInput');
             if (!input) return;
@@ -857,7 +778,6 @@
             }
         }
 
-        // SAVE UPDATED AVATAR FOR MEMBER
         function handleEditAvatarSubmit(e) {
             try {
                 e.preventDefault();
@@ -880,7 +800,6 @@
             }
         }
 
-        // ADD NEW MEMBER FROM ADMIN PORTAL WITH MANUAL PASSWORD
         function handleAddMemberSubmit(e) {
             try {
                 e.preventDefault();
@@ -901,7 +820,6 @@
                     customFamilies.push(finalFamilyGroup);
                 }
 
-                // Add to Directory
                 familyMembers.push({
                     id: Date.now() + Math.floor(Math.random() * 1000),
                     name: name,
@@ -911,7 +829,6 @@
                     avatar: avatar
                 });
 
-                // Add or Update in User Login DB using manual password
                 const existingUser = familyUsersDB.find(u => u.name.trim().toLowerCase() === name.toLowerCase());
                 if (!existingUser) {
                     familyUsersDB.push({
@@ -926,7 +843,7 @@
                     existingUser.pass = manualPass;
                 }
 
-                showToast(`Member "${name}" added with password "${manualPass}"!`);
+                showToast(`Member "${name}" added & syncing to Google Sheet!`);
                 e.target.reset();
                 toggleCustomFamilyInput('new');
 
@@ -941,7 +858,6 @@
             }
         }
 
-        // DELETE MEMBER & LOGIN CREDENTIAL (ADMIN ONLY)
         function handleDeleteMember(userName) {
             try {
                 if (!currentUser || currentUser.role !== 'admin') return;
@@ -973,13 +889,11 @@
             }
         }
 
-        // SELECT FAMILY SORT / FILTER BUTTON
         function selectFamilyFilter(familyName) {
             selectedFamilyFilter = familyName;
             renderDirectory();
         }
 
-        // RENDER FAMILY SORT BUTTONS ("All" + each family name)
         function renderFamilySortButtons() {
             const container = document.getElementById('familySortButtons');
             if (!container) return;
@@ -1012,7 +926,6 @@
             container.innerHTML = html;
         }
 
-        // UPDATE USER ROLE DIRECTLY FROM ADMIN TABLE
         function updateUserRole(userName, newRole) {
             const user = familyUsersDB.find(u => u.name === userName);
             if (user) {
@@ -1023,7 +936,6 @@
             }
         }
 
-        // POST NEW EVENT
         function handleAddEvent(e) {
             try {
                 e.preventDefault();
@@ -1054,14 +966,12 @@
             }
         }
 
-        // SHARE FUNCTION NOTIFICATION TO WHATSAPP
         function shareToWhatsApp(title, date, venue, agenda) {
             const message = `*FAMILY FUNCTION ANNOUNCEMENT*\n\n*Event:* ${title}\n*Date:* ${date}\n*Venue:* ${venue}\n*Details:* ${agenda}\n\nCheck full details on our Family Portal!`;
             const encodedUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             window.open(encodedUrl, '_blank');
         }
 
-        // DELETE EXISTING FUNCTION / NOTIFICATION (ADMIN ONLY)
         function handleDeleteEvent(eventId) {
             if (!currentUser || currentUser.role !== 'admin') return;
             familyEvents = familyEvents.filter(ev => ev.id !== eventId);
@@ -1070,7 +980,6 @@
             syncHubState();
         }
 
-        // TAB SWITCHING (MOBILE & DESKTOP SYNC)
         function switchTab(tabId) {
             ['directory', 'events', 'gallery', 'admin'].forEach(tab => {
                 const section = document.getElementById(`section-${tab}`);
@@ -1104,7 +1013,6 @@
             }
         }
 
-        // INITIALIZE APP
         function initApp() {
             renderDirectory();
             renderEvents();
@@ -1114,7 +1022,6 @@
             populateEditAvatarDropdown();
         }
 
-        // RENDER DIRECTORY
         function renderDirectory() {
             renderFamilySortButtons();
 
@@ -1190,7 +1097,6 @@
             });
         }
 
-        // RENDER EVENTS WITH WHATSAPP SHARE BUTTON
         function renderEvents() {
             const feed = document.getElementById('eventsFeed');
             if (!feed) return;
@@ -1227,7 +1133,6 @@
             }).join('');
         }
 
-        // POPULATE FOLDER DROPDOWN IN GALLERY UPLOAD
         function populateFolderSelect() {
             const select = document.getElementById('galFolder');
             if (!select) return;
@@ -1238,7 +1143,6 @@
             }
         }
 
-        // CREATE NEW FOLDER IN GALLERY
         function handleCreateFolder(e) {
             try {
                 e.preventDefault();
@@ -1270,7 +1174,6 @@
             }
         }
 
-        // HANDLE PHOTO UPLOAD WITH MAX 20 LIMIT PER FOLDER
         function handleUploadPhoto(e) {
             try {
                 e.preventDefault();
@@ -1307,7 +1210,6 @@
             }
         }
 
-        // DELETE ENTIRE GALLERY FOLDER AND ITS PHOTOS (ADMIN ONLY)
         function handleDeleteFolder(folderName) {
             if (!currentUser || currentUser.role !== 'admin') return;
 
@@ -1321,7 +1223,6 @@
             syncHubState();
         }
 
-        // RENDER GALLERY WITH 20 PHOTO LIMIT BADGE
         function renderGallery() {
             const grid = document.getElementById('galleryGrid');
             if (!grid) return;
@@ -1377,7 +1278,6 @@
             }).join('');
         }
 
-        // RENDER ADMIN TABLE WITH ROLE SWITCHER & DELETE BUTTON
         function renderAdminTable() {
             const table = document.getElementById('adminRoleTable');
             if (!table) return;
@@ -1414,29 +1314,9 @@
             }).join('');
         }
 
-        // Load saved local cache & initialize cloud sync if available
+        // Load cached local data first, then pull latest data from Google Sheet
         loadLocalCachedState();
-        initCloudSync();
+        loadFromGoogleSheet(false);
     </script>
-
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAcSmTky-zP38nDZuHDo6dUA7Fnx8u1EwE",
-    authDomain: "pulimoottil-members.firebaseapp.com",
-    projectId: "pulimoottil-members",
-    storageBucket: "pulimoottil-members.firebasestorage.app",
-    messagingSenderId: "74118886767",
-    appId: "1:74118886767:web:07571b23a8335de30b249a"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
 </body>
 </html>
