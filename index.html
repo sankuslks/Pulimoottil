@@ -926,11 +926,20 @@
         // Load cached local data first, then pull latest data from Google Sheet
         loadLocalCachedState();
         loadFromGoogleSheet(false);
+    <!-- ... existing code ... -->
+        // App Initialization Sequence
+        try {
+            if (typeof loadLocalCachedState === 'function') {
+                loadLocalCachedState();
+            }
+            if (typeof loadFromGoogleSheet === 'function') {
+                loadFromGoogleSheet(false);
+            }
+        } catch (initErr) {
+            console.warn("Initialization warning:", initErr);
+        }
     </script>
 </body>
 </html>
-```ofs
-
----
-
-ഇതോടെ Admin Portal-ൽ നിന്നും ഒരു ആളെ ഡിലീറ്റ് ചെയ്താൽ അയാളുടെ പേജ് കാർഡും ഡാറ്റാബേസിലെ പാസ്‌വേഡും അടക്കം പൂർണ്ണമായും ക്ലീൻ ആകും. ഷീറ്റിൽ നിങ്ങൾ വരുത്തുന്ന ഏത് തിരുത്തലുകളും `Refresh Sheet` ക്ലിക്ക് ചെയ്യുമ്പോൾ തിരികെ കൃത്യമായി ആ പേജിൽ ലൈവ് ആയി വരികയും ചെയ്യും!
+</body>
+</html>
