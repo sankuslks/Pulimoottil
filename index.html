@@ -405,7 +405,7 @@
 
     <!-- ALL JAVASCRIPT CODE INLINED & GOOGLE SHEETS SYNC -->
     <script>
-        // നിങ്ങളുടെ Google Apps Script Web App URL ഇവിടെ നൽകുക
+        // നിങ്ങളുടെ Google Apps Script Web App URL
         const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw9TZ5X2DgdofP5-pebX_lTommabkoqkexhRnwdER08hCoX4sqIvlfWZOhx9zVAgNGJcA/exec";
 
         // 1. EMBEDDED USER DATABASE
@@ -967,7 +967,8 @@
         }
 
         function shareToWhatsApp(title, date, venue, agenda) {
-            const message = `*FAMILY FUNCTION ANNOUNCEMENT*\n\n*Event:* ${title}\n*Date:* ${date}\n*Venue:* ${venue}\n*Details:* ${agenda}\n\nCheck full details on our Family Portal!`;
+            const portalUrl = window.location.href;
+            const message = `*FAMILY FUNCTION ANNOUNCEMENT*\n\n*Event:* ${title}\n*Date:* ${date}\n*Venue:* ${venue}\n*Details:* ${agenda}\n\nCheck full details on our Family Portal:\n${portalUrl}`;
             const encodedUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             window.open(encodedUrl, '_blank');
         }
