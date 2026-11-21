@@ -923,11 +923,6 @@
             }).join('');
         }
 
-        // Load cached local data first, then pull latest data from Google Sheet
-        loadLocalCachedState();
-        loadFromGoogleSheet(false);
-
-        // App Initialization Sequence
         try {
             if (typeof loadLocalCachedState === 'function') {
                 loadLocalCachedState();
