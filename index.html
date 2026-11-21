@@ -42,7 +42,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Custom CSS Styles -->
+    <!-- Lightweight Custom CSS Animations -->
     <style>
         .blurred-content {
             filter: blur(8px);
@@ -50,11 +50,10 @@
             user-select: none;
         }
 
-        /* Smooth Minimal Animations for Interactive UI */
-        @keyframes fadeInUp {
+        @keyframes fadeSlideUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px);
             }
             to {
                 opacity: 1;
@@ -62,25 +61,16 @@
             }
         }
 
-        .animate-fade-in-up {
-            animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .anim-card-enter {
+            animation: fadeSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        /* Smooth UI Card & Button Hover Transitions */
-        .member-card {
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-        }
-        .member-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px -5px rgba(12, 163, 235, 0.12);
-            border-color: #7cd0fd;
+        .hub-card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
 
-        .tab-btn, .mob-tab-btn, .filter-btn {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .filter-btn:active {
-            transform: scale(0.95);
+        .hub-card-hover:hover {
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -88,7 +78,7 @@
 
     <!-- LOGIN MODAL / OVERLAY -->
     <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
-        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full p-6 text-center transform transition-all">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full p-6 text-center anim-card-enter">
             <div class="w-16 h-16 bg-pastel-100 text-pastel-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner overflow-hidden border border-pastel-200 relative">
                 <img id="loginLogoImg" src="mb-avatar/logo.png" alt="Family Hub Logo" class="w-full h-full object-cover" onerror="this.classList.add('hidden'); document.getElementById('loginLogoFallback').classList.remove('hidden');">
                 <i id="loginLogoFallback" class="fa-solid fa-user-lock hidden"></i>
@@ -159,6 +149,9 @@
 
                 <!-- User Profile & Log Out Badge -->
                 <div class="flex items-center gap-2 sm:gap-3">
+                    <button onclick="fetchLatestFromGoogleSheet(true)" title="Refresh from Google Sheet" class="p-2 text-pastel-200 hover:text-white hover:bg-white/10 rounded-lg transition active:scale-95">
+                        <i class="fa-solid fa-rotate text-base"></i>
+                    </button>
                     <div class="text-right">
                         <div id="userDisplay" class="text-xs sm:text-sm font-bold leading-tight">Guest User</div>
                         <div id="roleDisplay" class="text-[10px] sm:text-xs text-pastel-200 font-medium">Family Member</div>
@@ -172,19 +165,19 @@
 
         <!-- MOBILE BOTTOM NAVIGATION BAR -->
         <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 px-2 py-1.5 flex justify-around items-center shadow-lg">
-            <button onclick="switchTab('directory')" id="mob-tab-directory" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-pastel-700 font-medium">
+            <button onclick="switchTab('directory')" id="mob-tab-directory" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-pastel-700 font-medium transition">
                 <i class="fa-solid fa-users text-lg"></i>
                 <span class="text-[10px] mt-0.5">Directory</span>
             </button>
-            <button onclick="switchTab('events')" id="mob-tab-events" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium">
+            <button onclick="switchTab('events')" id="mob-tab-events" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium transition">
                 <i class="fa-solid fa-bullhorn text-lg"></i>
                 <span class="text-[10px] mt-0.5">Functions</span>
             </button>
-            <button onclick="switchTab('gallery')" id="mob-tab-gallery" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium">
+            <button onclick="switchTab('gallery')" id="mob-tab-gallery" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium transition">
                 <i class="fa-solid fa-images text-lg"></i>
                 <span class="text-[10px] mt-0.5">Gallery</span>
             </button>
-            <button onclick="switchTab('admin')" id="mob-tab-admin" class="mob-tab-btn admin-only hidden flex flex-col items-center py-1 px-3 rounded-xl text-amber-600 font-medium">
+            <button onclick="switchTab('admin')" id="mob-tab-admin" class="mob-tab-btn admin-only hidden flex flex-col items-center py-1 px-3 rounded-xl text-amber-600 font-medium transition">
                 <i class="fa-solid fa-shield-halved text-lg"></i>
                 <span class="text-[10px] mt-0.5">Admin</span>
             </button>
@@ -194,7 +187,7 @@
         <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
 
             <!-- 1. DIRECTORY SECTION -->
-            <section id="section-directory" class="space-y-4 sm:space-y-6">
+            <section id="section-directory" class="space-y-4 sm:space-y-6 anim-card-enter">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Directory</h2>
@@ -204,7 +197,7 @@
                     <div class="w-full sm:w-auto">
                         <div class="relative w-full">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                            <input type="text" id="directorySearch" onkeyup="filterDirectory()" placeholder="Search members..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-pastel-400 outline-none">
+                            <input type="text" id="directorySearch" onkeyup="filterDirectory()" placeholder="Search members..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-pastel-400 outline-none transition">
                         </div>
                     </div>
                 </div>
@@ -222,7 +215,7 @@
             </section>
 
             <!-- 2. EVENTS SECTION -->
-            <section id="section-events" class="hidden space-y-4 sm:space-y-6">
+            <section id="section-events" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Functions & Notifications</h2>
@@ -240,7 +233,7 @@
                         <input type="text" id="evDate" required placeholder="Date (e.g. Dec 25, 2026)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                         <input type="text" id="evVenue" required placeholder="Venue (e.g. Community Hall)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                         <input type="text" id="evAgenda" required placeholder="Agenda / Details" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
-                        <button type="submit" class="sm:col-span-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow transition">
+                        <button type="submit" class="sm:col-span-2 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
                             <i class="fa-solid fa-paper-plane mr-1"></i> Broadcast Event
                         </button>
                     </form>
@@ -250,7 +243,7 @@
             </section>
 
             <!-- 3. GALLERY SECTION -->
-            <section id="section-gallery" class="hidden space-y-4 sm:space-y-6">
+            <section id="section-gallery" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Photo Gallery</h2>
@@ -267,7 +260,7 @@
                         </h3>
                         <form onsubmit="return handleCreateFolder(event);" class="flex flex-col sm:flex-row gap-3 text-sm">
                             <input type="text" id="newFolderName" required placeholder="Folder Name (e.g. Wedding Ceremony)" class="flex-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
-                            <button type="submit" class="px-5 py-2.5 bg-pastel-600 hover:bg-pastel-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                            <button type="submit" class="px-5 py-2.5 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.98] text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-plus"></i> Create Folder
                             </button>
                         </form>
@@ -294,7 +287,7 @@
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Photo URL / Path</label>
                                 <input type="text" id="galUrl" required placeholder="https://... or wedding/photo1.jpg" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
-                            <button type="submit" class="sm:col-span-2 lg:col-span-3 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow transition">
+                            <button type="submit" class="sm:col-span-2 lg:col-span-3 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
                                 <i class="fa-solid fa-plus mr-1"></i> Add Photo to Folder
                             </button>
                         </form>
@@ -308,7 +301,7 @@
             </section>
 
             <!-- 4. ADMIN SECTION -->
-            <section id="section-admin" class="hidden space-y-4 sm:space-y-6">
+            <section id="section-admin" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
                 <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60 space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
@@ -336,7 +329,7 @@
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Avatar Image Path / URL</label>
                                 <input type="text" id="editAvatarPathInput" required placeholder="mb-avatar/member.jpg or https://..." class="w-full p-2.5 bg-white border border-amber-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-400">
                             </div>
-                            <button type="submit" class="sm:col-span-3 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow transition">
+                            <button type="submit" class="sm:col-span-3 py-2.5 bg-amber-600 hover:bg-amber-700 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> Update Avatar
                             </button>
                         </form>
@@ -351,6 +344,14 @@
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Member Name (Login Username)</label>
                                 <input type="text" id="newMemName" required placeholder="e.g. Rahul" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Member Tag</label>
+                                <select id="newMemTag" onchange="toggleMemberTagFields()" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
+                                    <option value="adult">Adult</option>
+                                    <option value="baby">Baby</option>
+                                    <option value="child">Child</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Login Password (Manual)</label>
@@ -368,11 +369,11 @@
                                 <label class="block text-xs font-semibold text-pastel-700 mb-1">New Family Head Name (Creates "[Name]'s Family" section)</label>
                                 <input type="text" id="newCustomFamilyHead" placeholder="e.g. Rahul (becomes Rahul's Family)" class="w-full p-2.5 bg-pastel-50/50 border border-pastel-300 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
-                            <div>
+                            <div id="newMemPhoneWrapper">
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Phone Number</label>
                                 <input type="text" id="newMemPhone" required placeholder="+91 9876543210" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
-                            <div>
+                            <div id="newMemAddressWrapper">
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Google Maps Link</label>
                                 <input type="text" id="newMemAddress" placeholder="https://maps.google.com/..." class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
@@ -388,7 +389,7 @@
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Avatar Path (Optional)</label>
                                 <input type="text" id="newMemAvatar" placeholder="mb-avatar/rahul.jpg" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
-                            <button type="submit" class="sm:col-span-2 py-3 bg-pastel-600 hover:bg-pastel-700 text-white font-bold rounded-xl shadow transition">
+                            <button type="submit" class="sm:col-span-2 py-3 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
                                 <i class="fa-solid fa-plus mr-1"></i> Add Member & Save Login
                             </button>
                         </form>
@@ -400,11 +401,11 @@
                             <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
                                 <i class="fa-solid fa-users-gear text-pastel-600"></i> Registered Users & Roles
                             </h3>
-                            <div class="flex items-center gap-2 self-start sm:self-auto">
-                                <button type="button" onclick="loadFromGoogleSheet(true)" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="fetchLatestFromGoogleSheet(true)" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
                                     <i class="fa-solid fa-rotate mr-1"></i> Refresh Sheet
                                 </button>
-                                <span id="cloudSyncBadge" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200">
+                                <span id="cloudSyncBadge" class="self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200">
                                     <i class="fa-solid fa-table mr-1"></i> Google Sheet Ready
                                 </span>
                             </div>
@@ -430,16 +431,96 @@
         </main>
     </div>
 
+    <!-- EDIT ALL MEMBER DETAILS MODAL -->
+    <div id="editMemberModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 sm:p-6 space-y-4 anim-card-enter max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-bold font-display text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-user-pen text-pastel-600"></i> Edit Member Details
+                </h3>
+                <button type="button" onclick="closeEditMemberModal()" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <form id="editMemberForm" onsubmit="return handleSaveEditedMember(event);" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <input type="hidden" id="editOriginalUserName">
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Member Name</label>
+                    <input type="text" id="editMemName" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Member Tag</label>
+                    <select id="editMemTag" onchange="toggleEditMemberTagFields()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
+                        <option value="adult">Adult</option>
+                        <option value="baby">Baby</option>
+                        <option value="child">Child</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Login Password</label>
+                    <input type="text" id="editMemPass" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Household / Family Base</label>
+                    <select id="editMemHead" onchange="toggleCustomFamilyInput('edit')" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400"></select>
+                </div>
+
+                <div id="editCustomFamilyWrapper" class="hidden sm:col-span-2">
+                    <label class="block text-xs font-semibold text-pastel-700 mb-1">New Family Head Name</label>
+                    <input type="text" id="editCustomFamilyHead" placeholder="e.g. Rahul (becomes Rahul's Family)" class="w-full p-2.5 bg-pastel-50/50 border border-pastel-300 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                </div>
+
+                <div id="editMemPhoneWrapper">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Phone Number</label>
+                    <input type="text" id="editMemPhone" placeholder="+91 9876543210" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                </div>
+
+                <div id="editMemAddressWrapper">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Google Maps Link</label>
+                    <input type="text" id="editMemAddress" placeholder="https://maps.google.com/..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Access Role</label>
+                    <select id="editMemRole" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <option value="member">Member</option>
+                        <option value="admin">Admin</option>
+                        <option value="banned">Banned</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Avatar Path / URL</label>
+                    <input type="text" id="editMemAvatar" placeholder="mb-avatar/member.jpg" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                </div>
+
+                <div class="sm:col-span-2 flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="closeEditMemberModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.98] text-white font-bold rounded-xl shadow transition">
+                        <i class="fa-solid fa-check mr-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- BROADCAST / NOTIFICATION TOAST -->
-    <div id="toastBanner" class="hidden fixed bottom-20 md:bottom-5 right-4 left-4 md:left-auto z-50 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 text-sm">
+    <div id="toastBanner" class="hidden fixed bottom-20 md:bottom-5 right-4 left-4 md:left-auto z-50 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 text-sm anim-card-enter">
         <i class="fa-solid fa-bell text-amber-400"></i>
         <span id="toastMessage"></span>
     </div>
 
-    <!-- ALL JAVASCRIPT CODE INLINED & GOOGLE SHEETS SYNC -->
+    <!-- CORE APPLICATION LOGIC WITH GOOGLE SHEET (APPS SCRIPT) TWO-WAY SYNC -->
     <script>
-        // നിങ്ങളുടെ Google Apps Script Web App URL
-        const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw9TZ5X2DgdofP5-pebX_lTommabkoqkexhRnwdER08hCoX4sqIvlfWZOhx9zVAgNGJcA/exec";
+        // PASTE YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL BELOW:
+        const GOOGLE_SHEET_WEBAPP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
         // 1. EMBEDDED USER DATABASE
         const familyUsersDB = [
@@ -453,17 +534,704 @@
 
         // 2. DIRECTORY MEMBERS DATA
         let familyMembers = [
-            { id: 1, name: "Sumesh", headOfFamily: "Sumesh's Family", phone: "+919876543210", address: "https://www.google.com/maps", avatar: "mb-avatar/sumesh.jpg" },
-            { id: 2, name: "Lovely", headOfFamily: "Sumesh's Family", phone: "+919876543211", address: "https://www.google.com/maps", avatar: "mb-avatar/lovely.jpg" },
-            { id: 3, name: "Kaashi", headOfFamily: "Sumesh's Family", phone: "+919876543212", address: "https://www.google.com/maps", avatar: "mb-avatar/kaashi.jpg" },
-            { id: 4, name: "Sasidharan", headOfFamily: "Sasidharan's Family", phone: "+919876543213", address: "https://www.google.com/maps", avatar: "mb-avatar/sasidharan.jpg" },
-            { id: 5, name: "Ajitha", headOfFamily: "Sasidharan's Family", phone: "+919876543214", address: "https://www.google.com/maps", avatar: "mb-avatar/ajitha.jpg" }
+            { id: 1, name: "Sumesh", memberTag: "adult", headOfFamily: "Sumesh's Family", phone: "+919876543210", address: "https://www.google.com/maps", avatar: "mb-avatar/sumesh.jpg" },
+            { id: 2, name: "Lovely", memberTag: "adult", headOfFamily: "Sumesh's Family", phone: "+919876543211", address: "https://www.google.com/maps", avatar: "mb-avatar/lovely.jpg" },
+            { id: 3, name: "Kaashi", memberTag: "adult", headOfFamily: "Sumesh's Family", phone: "+919876543212", address: "https://www.google.com/maps", avatar: "mb-avatar/kaashi.jpg" },
+            { id: 4, name: "Sasidharan", memberTag: "adult", headOfFamily: "Sasidharan's Family", phone: "+919876543213", address: "https://www.google.com/maps", avatar: "mb-avatar/sasidharan.jpg" },
+            { id: 5, name: "Ajitha", memberTag: "adult", headOfFamily: "Sasidharan's Family", phone: "+919876543214", address: "https://www.google.com/maps", avatar: "mb-avatar/ajitha.jpg" }
         ];
 
         let customFamilies = ["Sumesh's Family", "Sasidharan's Family"];
 
         // 3. EVENTS DATA
-        // UPDATED CLEAN DELETE FUNCTION: DELETES MEMBER FROM BOTH USERS DB & DIRECTORY CARDS
+        let familyEvents = [
+            { id: 1, title: "Annual Family Reunion", venue: "Grand Hotel Resort", agenda: "Get-together and dinner for all family members.", date: "Dec 25, 2026" }
+        ];
+
+        // 4. GALLERY DATA
+        let galleryFolders = ["Summer Gathering", "Holiday Celebration"];
+        let galleryPhotos = [
+            { id: 1, folder: "Summer Gathering", title: "Summer Gathering #1", url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, folder: "Holiday Celebration", title: "Holiday Celebration #1", url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        let currentUser = null;
+        let toastTimeout = null;
+        let selectedFamilyFilter = "ALL";
+        let isApplyingSheetSnapshot = false;
+
+        function hasValidSheetUrl() {
+            return typeof GOOGLE_SHEET_WEBAPP_URL === "string"
+                && GOOGLE_SHEET_WEBAPP_URL.trim().startsWith("https://script.google.com/");
+        }
+
+        function setSheetBadge(mode, label) {
+            const badge = document.getElementById("cloudSyncBadge");
+            if (!badge) return;
+            if (mode === "live") {
+                badge.innerHTML = `<i class="fa-solid fa-table-cells mr-1"></i> ${label}`;
+                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
+            } else if (mode === "warn") {
+                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${label}`;
+                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200";
+            } else {
+                badge.innerHTML = `<i class="fa-solid fa-link mr-1"></i> ${label}`;
+                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200";
+            }
+        }
+
+        function buildHubPayload() {
+            return {
+                familyUsersDB,
+                familyMembers,
+                customFamilies,
+                familyEvents,
+                galleryFolders,
+                galleryPhotos,
+                updatedAt: Date.now()
+            };
+        }
+
+        // PUSH UPDATES TO GOOGLE SHEET VIA APPS SCRIPT POST
+        async function pushHubStateToGoogleSheet(payload) {
+            if (!hasValidSheetUrl()) {
+                setSheetBadge("setup", "Add Sheet URL");
+                return;
+            }
+            try {
+                await fetch(GOOGLE_SHEET_WEBAPP_URL.trim(), {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ state: payload })
+                });
+                setSheetBadge("live", "Sheet Synced");
+            } catch (err) {
+                console.warn("Google Sheet POST warning:", err);
+                setSheetBadge("warn", "Sheet Sync Error");
+            }
+        }
+
+        // PULL & MERGE LATEST DATA FROM GOOGLE SHEET VIA APPS SCRIPT GET
+        async function fetchLatestFromGoogleSheet(notifyUser = false) {
+            if (!hasValidSheetUrl()) {
+                setSheetBadge("setup", "Add Sheet URL");
+                if (notifyUser) showToast("Please paste your Google Apps Script Web App URL in index.html first!");
+                return;
+            }
+            try {
+                const sep = GOOGLE_SHEET_WEBAPP_URL.includes("?") ? "&" : "?";
+                const res = await fetch(`${GOOGLE_SHEET_WEBAPP_URL.trim()}${sep}_t=${Date.now()}`, {
+                    method: "GET",
+                    cache: "no-store"
+                });
+                const data = await res.json();
+                if (data && data.ok && data.state && typeof data.state === "object") {
+                    localStorage.setItem("familyHub_CompleteState_v1", JSON.stringify(data.state));
+                    applySyncedPayload(data.state);
+                    setSheetBadge("live", "Sheet Live");
+                    if (notifyUser) showToast("Synced latest data from Google Sheet!");
+                }
+            } catch (err) {
+                console.warn("Google Sheet GET warning:", err);
+                setSheetBadge("warn", "Sheet Fetch Failed");
+                if (notifyUser) showToast("Could not read from Google Sheet. Check deployment access.");
+            }
+        }
+
+        // SAVE & SYNC HUB STATE
+        function syncHubState(skipSheetWrite = false) {
+            try {
+                const payload = buildHubPayload();
+                localStorage.setItem('familyHub_CompleteState_v1', JSON.stringify(payload));
+
+                if (!skipSheetWrite && !isApplyingSheetSnapshot) {
+                    pushHubStateToGoogleSheet(payload);
+                }
+            } catch (err) {
+                console.warn("State sync warning:", err);
+            }
+        }
+
+        // APPLY SYNCED DATA
+        function applySyncedPayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return;
+            isApplyingSheetSnapshot = true;
+            try {
+                if (Array.isArray(parsed.familyUsersDB) && parsed.familyUsersDB.length > 0) {
+                    familyUsersDB.length = 0;
+                    parsed.familyUsersDB.forEach(u => familyUsersDB.push(u));
+                }
+                if (Array.isArray(parsed.familyMembers)) {
+                    familyMembers = parsed.familyMembers.map(m => ({
+                        ...m,
+                        memberTag: m.memberTag || (m.isChild ? 'child' : 'adult')
+                    }));
+                }
+                if (Array.isArray(parsed.customFamilies)) customFamilies = parsed.customFamilies;
+                if (Array.isArray(parsed.familyEvents)) familyEvents = parsed.familyEvents;
+                if (Array.isArray(parsed.galleryFolders)) galleryFolders = parsed.galleryFolders;
+                if (Array.isArray(parsed.galleryPhotos)) galleryPhotos = parsed.galleryPhotos;
+
+                if (currentUser) {
+                    const refreshedUser = familyUsersDB.find(
+                        u => u.name.trim().toLowerCase() === currentUser.name.trim().toLowerCase()
+                    );
+                    if (refreshedUser) {
+                        if (refreshedUser.role === 'banned') {
+                            handleLogout();
+                            return;
+                        }
+                        currentUser = refreshedUser;
+                        const userDisplay = document.getElementById('userDisplay');
+                        const roleDisplay = document.getElementById('roleDisplay');
+                        if (userDisplay) userDisplay.innerText = currentUser.name;
+                        if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
+                    }
+                    populateFamilyHeadSelect();
+                    renderDirectory();
+                    renderEvents();
+                    populateFolderSelect();
+                    renderGallery();
+                    renderAdminTable();
+                    populateEditAvatarDropdown();
+                }
+            } finally {
+                isApplyingSheetSnapshot = false;
+            }
+        }
+
+        function loadLocalCachedState() {
+            try {
+                const raw = localStorage.getItem('familyHub_CompleteState_v1');
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                applySyncedPayload(parsed);
+            } catch (err) {
+                console.warn("Local cache load error:", err);
+            }
+        }
+
+        function showToast(message) {
+            try {
+                const banner = document.getElementById('toastBanner');
+                const msgEl = document.getElementById('toastMessage');
+                if (!banner || !msgEl) return;
+
+                msgEl.innerText = message;
+                banner.classList.remove('hidden');
+
+                if (toastTimeout) clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    banner.classList.add('hidden');
+                }, 3500);
+            } catch (err) {
+                console.error("Toast error:", err);
+            }
+        }
+
+        function setGalleryStatus(message, isError) {
+            const statusEl = document.getElementById('galleryStatusMsg');
+            if (!statusEl) return;
+
+            if (!message) {
+                statusEl.classList.add('hidden');
+                statusEl.innerText = '';
+                return;
+            }
+
+            statusEl.classList.remove('hidden', 'bg-rose-50', 'text-rose-700', 'border-rose-200', 'bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+            if (isError) {
+                statusEl.classList.add('bg-rose-50', 'text-rose-700', 'border-rose-200');
+            } else {
+                statusEl.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+            }
+            statusEl.innerText = message;
+        }
+
+        function handleLoginSubmit(event) {
+            try {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                const usernameEl = document.getElementById('usernameInput');
+                const passwordEl = document.getElementById('passwordInput');
+                const errorEl = document.getElementById('loginError');
+
+                if (!usernameEl || !passwordEl) return false;
+
+                const enteredName = usernameEl.value.trim();
+                const enteredPass = passwordEl.value.trim();
+
+                const foundUser = familyUsersDB.find(
+                    u => u.name.trim().toLowerCase() === enteredName.toLowerCase() && String(u.pass).trim() === enteredPass
+                );
+
+                if (!foundUser) {
+                    if (errorEl) {
+                        errorEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Invalid name or password!';
+                        errorEl.classList.remove('hidden');
+                    }
+                    return false;
+                }
+
+                if (foundUser.role === 'banned') {
+                    if (errorEl) {
+                        errorEl.innerHTML = '<i class="fa-solid fa-ban mr-1 font-bold"></i> Account Banned!';
+                        errorEl.classList.remove('hidden');
+                    }
+                    return false;
+                }
+
+                currentUser = foundUser;
+                if (errorEl) errorEl.classList.add('hidden');
+
+                const loginModal = document.getElementById('loginModal');
+                const appContainer = document.getElementById('appContainer');
+
+                if (loginModal) {
+                    loginModal.style.display = 'none';
+                    loginModal.classList.add('hidden');
+                }
+                if (appContainer) {
+                    appContainer.classList.remove('blurred-content');
+                    appContainer.style.filter = 'none';
+                    appContainer.style.pointerEvents = 'auto';
+                }
+
+                const userDisplay = document.getElementById('userDisplay');
+                const roleDisplay = document.getElementById('roleDisplay');
+                if (userDisplay) userDisplay.innerText = currentUser.name;
+                if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
+
+                if (currentUser.role === 'admin') {
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                } else {
+                    document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                }
+
+                initApp();
+                fetchLatestFromGoogleSheet(false);
+                return false;
+            } catch (err) {
+                console.error("Login error:", err);
+                return false;
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            const loginModal = document.getElementById('loginModal');
+            const appContainer = document.getElementById('appContainer');
+
+            if (loginModal) {
+                loginModal.style.display = 'flex';
+                loginModal.classList.remove('hidden');
+            }
+            if (appContainer) {
+                appContainer.classList.add('blurred-content');
+            }
+
+            const uInput = document.getElementById('usernameInput');
+            const pInput = document.getElementById('passwordInput');
+            if (uInput) uInput.value = '';
+            if (pInput) pInput.value = '';
+            const errorEl = document.getElementById('loginError');
+            if (errorEl) errorEl.classList.add('hidden');
+        }
+
+        function populateFamilyHeadSelect(selectedOverride = null) {
+            const select = document.getElementById('newMemHead');
+            if (!select) return;
+
+            const currentVal = selectedOverride || select.value || "Sumesh's Family";
+            const familySet = new Set(["Sumesh's Family", "Sasidharan's Family"]);
+
+            if (Array.isArray(customFamilies)) {
+                customFamilies.forEach(fam => {
+                    if (fam && fam.trim()) familySet.add(fam.trim());
+                });
+            }
+
+            if (Array.isArray(familyMembers)) {
+                familyMembers.forEach(m => {
+                    if (m && m.headOfFamily && m.headOfFamily.trim()) {
+                        familySet.add(m.headOfFamily.trim());
+                    }
+                });
+            }
+
+            const optionsHtml = Array.from(familySet)
+                .map(fam => `<option value="${fam}">${fam}</option>`)
+                .join('') + `<option value="Other Family">Other Family</option>`;
+
+            select.innerHTML = optionsHtml;
+
+            if (currentVal && Array.from(select.options).some(opt => opt.value === currentVal)) {
+                select.value = currentVal;
+            } else {
+                select.value = "Sumesh's Family";
+            }
+        }
+
+        function toggleCustomFamilyInput(mode) {
+            const selectEl = document.getElementById(mode === 'new' ? 'newMemHead' : 'editMemHead');
+            const wrapperEl = document.getElementById(mode === 'new' ? 'newCustomFamilyWrapper' : 'editCustomFamilyWrapper');
+            const inputEl = document.getElementById(mode === 'new' ? 'newCustomFamilyHead' : 'editCustomFamilyHead');
+
+            if (selectEl && wrapperEl) {
+                if (selectEl.value === 'Other Family') {
+                    wrapperEl.classList.remove('hidden');
+                    if (inputEl) inputEl.required = true;
+                } else {
+                    wrapperEl.classList.add('hidden');
+                    if (inputEl) {
+                        inputEl.required = false;
+                        inputEl.value = '';
+                    }
+                }
+            }
+        }
+
+        function toggleMemberTagFields() {
+            const tagEl = document.getElementById('newMemTag');
+            const phoneInput = document.getElementById('newMemPhone');
+            const phoneWrapper = document.getElementById('newMemPhoneWrapper');
+            const addressWrapper = document.getElementById('newMemAddressWrapper');
+            const addressInput = document.getElementById('newMemAddress');
+
+            const tagValue = tagEl ? tagEl.value : 'adult';
+            const hideContact = tagValue === 'baby' || tagValue === 'child';
+
+            if (phoneInput) {
+                phoneInput.required = !hideContact;
+                if (hideContact) phoneInput.value = '';
+            }
+            if (addressInput && hideContact) {
+                addressInput.value = '';
+            }
+            if (phoneWrapper) {
+                phoneWrapper.classList.toggle('hidden', hideContact);
+            }
+            if (addressWrapper) {
+                addressWrapper.classList.toggle('hidden', hideContact);
+            }
+        }
+
+        function toggleEditMemberTagFields() {
+            const tagEl = document.getElementById('editMemTag');
+            const phoneInput = document.getElementById('editMemPhone');
+            const phoneWrapper = document.getElementById('editMemPhoneWrapper');
+            const addressWrapper = document.getElementById('editMemAddressWrapper');
+            const addressInput = document.getElementById('editMemAddress');
+
+            const tagValue = tagEl ? tagEl.value : 'adult';
+            const hideContact = tagValue === 'baby' || tagValue === 'child';
+
+            if (phoneInput) {
+                phoneInput.required = !hideContact;
+                if (hideContact) phoneInput.value = '';
+            }
+            if (addressInput && hideContact) {
+                addressInput.value = '';
+            }
+            if (phoneWrapper) {
+                phoneWrapper.classList.toggle('hidden', hideContact);
+            }
+            if (addressWrapper) {
+                addressWrapper.classList.toggle('hidden', hideContact);
+            }
+        }
+
+        function openEditMemberModal(userName) {
+            try {
+                if (!currentUser || currentUser.role !== 'admin') return;
+                const modal = document.getElementById('editMemberModal');
+                if (!modal) return;
+
+                const userObj = familyUsersDB.find(
+                    u => u.name.trim().toLowerCase() === String(userName).trim().toLowerCase()
+                );
+                const memberObj = familyMembers.find(
+                    m => m.name.trim().toLowerCase() === String(userName).trim().toLowerCase()
+                );
+
+                const inferredTag = memberObj?.memberTag
+                    || (memberObj?.isChild ? 'child' : '')
+                    || (userObj?.roleDesc?.toLowerCase().includes('(baby)') ? 'baby' : '')
+                    || (userObj?.roleDesc?.toLowerCase().includes('(child)') ? 'child' : 'adult');
+
+                const inferredHead = memberObj?.headOfFamily
+                    || (userObj?.roleDesc || "Sumesh's Family").replace(/\s*\((Baby|Child)\)\s*$/i, '').trim()
+                    || "Sumesh's Family";
+
+                const headSelect = document.getElementById('editMemHead');
+                const familySet = new Set(["Sumesh's Family", "Sasidharan's Family"]);
+                if (Array.isArray(customFamilies)) customFamilies.forEach(f => f && familySet.add(f.trim()));
+                if (Array.isArray(familyMembers)) familyMembers.forEach(m => m?.headOfFamily && familySet.add(m.headOfFamily.trim()));
+                if (inferredHead) familySet.add(inferredHead);
+
+                if (headSelect) {
+                    headSelect.innerHTML = Array.from(familySet)
+                        .map(fam => `<option value="${fam}">${fam}</option>`)
+                        .join('') + `<option value="Other Family">Other Family</option>`;
+                    headSelect.value = inferredHead;
+                }
+
+                document.getElementById('editOriginalUserName').value = userObj ? userObj.name : (memberObj ? memberObj.name : userName);
+                document.getElementById('editMemName').value = userObj ? userObj.name : (memberObj ? memberObj.name : userName);
+                document.getElementById('editMemTag').value = inferredTag;
+                document.getElementById('editMemPass').value = userObj ? userObj.pass : '7777';
+                document.getElementById('editMemPhone').value = memberObj?.phone || '';
+                document.getElementById('editMemAddress').value = memberObj?.address || '';
+                document.getElementById('editMemRole').value = userObj?.role || 'member';
+                document.getElementById('editMemAvatar').value = memberObj?.avatar || `mb-avatar/${(userObj?.name || userName).toLowerCase()}.jpg`;
+
+                const customWrap = document.getElementById('editCustomFamilyWrapper');
+                const customInp = document.getElementById('editCustomFamilyHead');
+                if (customWrap) customWrap.classList.add('hidden');
+                if (customInp) {
+                    customInp.required = false;
+                    customInp.value = '';
+                }
+
+                toggleEditMemberTagFields();
+                modal.classList.remove('hidden');
+            } catch (err) {
+                console.error("Open edit modal error:", err);
+            }
+        }
+
+        function closeEditMemberModal() {
+            const modal = document.getElementById('editMemberModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function handleSaveEditedMember(e) {
+            try {
+                e.preventDefault();
+                if (!currentUser || currentUser.role !== 'admin') return false;
+
+                const originalName = document.getElementById('editOriginalUserName').value.trim();
+                const updatedName = document.getElementById('editMemName').value.trim();
+                const memberTag = document.getElementById('editMemTag').value || 'adult';
+                const hideContact = memberTag === 'baby' || memberTag === 'child';
+                const updatedPass = document.getElementById('editMemPass').value.trim() || '7777';
+                const selectedHead = document.getElementById('editMemHead').value;
+                const customHead = document.getElementById('editCustomFamilyHead')?.value.trim() || '';
+                const updatedPhone = hideContact ? '' : document.getElementById('editMemPhone').value.trim();
+                const updatedAddress = hideContact ? '' : (document.getElementById('editMemAddress').value.trim() || 'https://www.google.com/maps');
+                const updatedRole = document.getElementById('editMemRole').value;
+                const updatedAvatar = document.getElementById('editMemAvatar').value.trim() || `mb-avatar/${updatedName.toLowerCase()}.jpg`;
+
+                if (!updatedName) return false;
+
+                const finalFamilyGroup = resolveFamilySection(selectedHead, customHead);
+                if (!customFamilies.includes(finalFamilyGroup)) {
+                    customFamilies.push(finalFamilyGroup);
+                }
+
+                const tagSuffix = memberTag === 'baby' ? ' (Baby)' : memberTag === 'child' ? ' (Child)' : '';
+                const updatedRoleDesc = `${finalFamilyGroup}${tagSuffix}`;
+
+                let userObj = familyUsersDB.find(
+                    u => u.name.trim().toLowerCase() === originalName.toLowerCase()
+                );
+                if (userObj) {
+                    userObj.name = updatedName;
+                    userObj.roleDesc = updatedRoleDesc;
+                    userObj.pass = updatedPass;
+                    userObj.role = updatedRole;
+                } else {
+                    familyUsersDB.push({
+                        name: updatedName,
+                        roleDesc: updatedRoleDesc,
+                        pass: updatedPass,
+                        role: updatedRole
+                    });
+                }
+
+                let memberObj = familyMembers.find(
+                    m => m.name.trim().toLowerCase() === originalName.toLowerCase()
+                );
+                if (memberObj) {
+                    memberObj.name = updatedName;
+                    memberObj.memberTag = memberTag;
+                    memberObj.isChild = hideContact;
+                    memberObj.headOfFamily = finalFamilyGroup;
+                    memberObj.phone = updatedPhone;
+                    memberObj.address = updatedAddress;
+                    memberObj.avatar = updatedAvatar;
+                } else {
+                    familyMembers.push({
+                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        name: updatedName,
+                        memberTag: memberTag,
+                        isChild: hideContact,
+                        headOfFamily: finalFamilyGroup,
+                        phone: updatedPhone,
+                        address: updatedAddress,
+                        avatar: updatedAvatar
+                    });
+                }
+
+                if (currentUser && currentUser.name.trim().toLowerCase() === originalName.toLowerCase()) {
+                    currentUser.name = updatedName;
+                    currentUser.roleDesc = updatedRoleDesc;
+                    currentUser.role = updatedRole;
+                    currentUser.pass = updatedPass;
+                    const userDisplay = document.getElementById('userDisplay');
+                    const roleDisplay = document.getElementById('roleDisplay');
+                    if (userDisplay) userDisplay.innerText = currentUser.name;
+                    if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
+                }
+
+                closeEditMemberModal();
+                populateFamilyHeadSelect(finalFamilyGroup);
+                populateEditAvatarDropdown();
+                renderDirectory();
+                renderAdminTable();
+                syncHubState();
+                showToast(`Updated all details for "${updatedName}"!`);
+                return false;
+            } catch (err) {
+                console.error("Save edited member error:", err);
+                return false;
+            }
+        }
+
+        function resolveFamilySection(selectedHead, customHeadRaw) {
+            if (selectedHead === 'Other Family') {
+                const cleanName = (customHeadRaw || '').trim();
+                if (!cleanName) return "Other Family";
+                if (/'s\s+Family$/i.test(cleanName)) {
+                    return cleanName;
+                }
+                const suffix = cleanName.toLowerCase().endsWith('s') ? "'" : "'s";
+                return `${cleanName}${suffix} Family`;
+            }
+            return selectedHead;
+        }
+
+        function populateEditAvatarDropdown() {
+            const select = document.getElementById('editAvatarMemberSelect');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Choose Member --</option>' +
+                familyMembers.map(m => `<option value="${m.id}">${m.name} (${m.headOfFamily})</option>`).join('');
+            if (currentVal && familyMembers.some(m => String(m.id) === String(currentVal))) {
+                select.value = currentVal;
+            }
+        }
+
+        function loadMemberAvatarToEdit(id) {
+            const input = document.getElementById('editAvatarPathInput');
+            if (!input) return;
+            if (!id) {
+                input.value = '';
+                return;
+            }
+            const member = familyMembers.find(m => String(m.id) === String(id));
+            if (member) {
+                input.value = member.avatar || `mb-avatar/${member.name.toLowerCase()}.jpg`;
+            }
+        }
+
+        function handleEditAvatarSubmit(e) {
+            try {
+                e.preventDefault();
+                const id = document.getElementById('editAvatarMemberSelect').value;
+                const newAvatar = document.getElementById('editAvatarPathInput').value.trim();
+
+                if (!id || !newAvatar) return false;
+
+                const member = familyMembers.find(m => String(m.id) === String(id));
+                if (member) {
+                    member.avatar = newAvatar;
+                    showToast(`Avatar updated for "${member.name}"!`);
+                    renderDirectory();
+                    syncHubState();
+                }
+                return false;
+            } catch (err) {
+                console.error("Avatar update error:", err);
+                return false;
+            }
+        }
+
+        function handleAddMemberSubmit(e) {
+            try {
+                e.preventDefault();
+                const name = document.getElementById('newMemName').value.trim();
+                const memberTag = document.getElementById('newMemTag') ? document.getElementById('newMemTag').value : 'adult';
+                const hideContact = memberTag === 'baby' || memberTag === 'child';
+                const manualPass = document.getElementById('newMemPass').value.trim() || '7777';
+                const selectedHead = document.getElementById('newMemHead').value;
+                const customHead = document.getElementById('newCustomFamilyHead') ? document.getElementById('newCustomFamilyHead').value.trim() : '';
+                const phone = hideContact ? '' : document.getElementById('newMemPhone').value.trim();
+                const address = hideContact ? '' : (document.getElementById('newMemAddress').value.trim() || 'https://www.google.com/maps');
+                const role = document.getElementById('newMemRole').value;
+                const avatar = document.getElementById('newMemAvatar').value.trim() || `mb-avatar/${name.toLowerCase()}.jpg`;
+
+                if (!name) return false;
+
+                const finalFamilyGroup = resolveFamilySection(selectedHead, customHead);
+
+                if (!customFamilies.includes(finalFamilyGroup)) {
+                    customFamilies.push(finalFamilyGroup);
+                }
+
+                familyMembers.push({
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    name: name,
+                    memberTag: memberTag,
+                    headOfFamily: finalFamilyGroup,
+                    phone: phone,
+                    address: address,
+                    avatar: avatar
+                });
+
+                const tagSuffix = memberTag === 'baby' ? ' (Baby)' : memberTag === 'child' ? ' (Child)' : '';
+                const existingUser = familyUsersDB.find(u => u.name.trim().toLowerCase() === name.toLowerCase());
+                if (!existingUser) {
+                    familyUsersDB.push({
+                        name: name,
+                        roleDesc: `${finalFamilyGroup}${tagSuffix}`,
+                        role: role,
+                        pass: manualPass
+                    });
+                } else {
+                    existingUser.role = role;
+                    existingUser.roleDesc = `${finalFamilyGroup}${tagSuffix}`;
+                    existingUser.pass = manualPass;
+                }
+
+                showToast(
+                    memberTag === 'baby'
+                        ? `"${name}" added with Baby tag!`
+                        : memberTag === 'child'
+                        ? `"${name}" added with Child tag!`
+                        : `Member "${name}" added!`
+                );
+
+                e.target.reset();
+                populateFamilyHeadSelect(finalFamilyGroup);
+                toggleCustomFamilyInput('new');
+                toggleMemberTagFields();
+
+                renderDirectory();
+                renderAdminTable();
+                populateEditAvatarDropdown();
+                syncHubState();
+                return false;
+            } catch (err) {
+                console.error("Add member error:", err);
+                return false;
+            }
+        }
+
         function handleDeleteMember(userName) {
             try {
                 if (!currentUser || currentUser.role !== 'admin') return;
@@ -474,7 +1242,6 @@
                     return;
                 }
 
-                // 1. Users DB-ൽ നിന്ന് മായ്ക്കുന്നു
                 const userIdx = familyUsersDB.findIndex(
                     u => u.name.trim().toLowerCase() === userName.trim().toLowerCase()
                 );
@@ -482,12 +1249,12 @@
                     familyUsersDB.splice(userIdx, 1);
                 }
 
-                // 2. Directory Members-ൽ നിന്നും മായ്ക്കുന്നു (Fixes duplicate directory cards)
                 familyMembers = familyMembers.filter(
                     m => m.name.trim().toLowerCase() !== userName.trim().toLowerCase()
                 );
 
-                showToast(`Member "${userName}" deleted from Admin Portal & Directory!`);
+                showToast(`Member "${userName}" deleted!`);
+                populateFamilyHeadSelect();
                 renderDirectory();
                 renderAdminTable();
                 populateEditAvatarDropdown();
@@ -517,16 +1284,16 @@
             }
 
             const allBtnClass = selectedFamilyFilter === "ALL"
-                ? "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-md shadow-pastel-500/20 transition scale-105"
-                : "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition hover:scale-105";
+                ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition active:scale-95"
+                : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition active:scale-95";
 
             let html = `<button type="button" onclick="selectFamilyFilter('ALL')" class="${allBtnClass}">All</button>`;
 
             html += familyNames.map(fam => {
                 const isActive = selectedFamilyFilter === fam;
                 const cls = isActive
-                    ? "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-md shadow-pastel-500/20 transition scale-105"
-                    : "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition hover:scale-105";
+                    ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition active:scale-95"
+                    : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition active:scale-95";
                 const safeFam = fam.replace(/'/g, "\\'");
                 return `<button type="button" onclick="selectFamilyFilter('${safeFam}')" class="${cls}">${fam}</button>`;
             }).join('');
@@ -575,8 +1342,7 @@
         }
 
         function shareToWhatsApp(title, date, venue, agenda) {
-            const portalUrl = window.location.href;
-            const message = `*FAMILY FUNCTION ANNOUNCEMENT*\n\n*Event:* ${title}\n*Date:* ${date}\n*Venue:* ${venue}\n*Details:* ${agenda}\n\nCheck full details on our Family Portal:\n${portalUrl}`;
+            const message = `*FAMILY FUNCTION ANNOUNCEMENT*\n\n*Event:* ${title}\n*Date:* ${date}\n*Venue:* ${venue}\n*Details:* ${agenda}\n\nCheck full details on our Family Portal!`;
             const encodedUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
             window.open(encodedUrl, '_blank');
         }
@@ -611,7 +1377,12 @@
             const activeBtn = document.getElementById(`tab-${tabId}`);
             const activeMobBtn = document.getElementById(`mob-tab-${tabId}`);
 
-            if (activeSection) activeSection.classList.remove('hidden');
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+                activeSection.classList.remove('anim-card-enter');
+                void activeSection.offsetWidth;
+                activeSection.classList.add('anim-card-enter');
+            }
             if (activeBtn) {
                 activeBtn.classList.add('bg-white/20', 'text-white');
                 activeBtn.classList.remove('text-pastel-100');
@@ -623,12 +1394,24 @@
         }
 
         function initApp() {
+            populateFamilyHeadSelect();
             renderDirectory();
             renderEvents();
             populateFolderSelect();
             renderGallery();
             renderAdminTable();
             populateEditAvatarDropdown();
+            setSheetBadge(hasValidSheetUrl() ? "live" : "setup", hasValidSheetUrl() ? "Sheet Ready" : "Add Sheet URL");
+        }
+
+        function getMemberTagBadgeHtml(tagValue) {
+            if (tagValue === 'baby') {
+                return `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-pink-100 text-pink-700 border border-pink-200"><i class="fa-solid fa-baby text-pink-500"></i> Baby</span>`;
+            }
+            if (tagValue === 'child') {
+                return `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200"><span>🧒</span> Child</span>`;
+            }
+            return '';
         }
 
         function renderDirectory() {
@@ -656,7 +1439,7 @@
 
             for (const [head, members] of entries) {
                 const groupEl = document.createElement('div');
-                groupEl.className = "space-y-4 animate-fade-in-up";
+                groupEl.className = "space-y-4 anim-card-enter";
                 groupEl.innerHTML = `
                     <h3 class="text-lg font-bold font-display text-pastel-800 border-b border-slate-200 pb-2 flex items-center justify-between">
                         <span>${head}</span>
@@ -665,24 +1448,29 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${members.length === 0
                             ? `<p class="text-xs text-slate-400 italic py-2 col-span-full">No members added to ${head} yet.</p>`
-                            : members.map(m => {
+                            : members.map((m, idx) => {
                                 const initial = m.name.charAt(0).toUpperCase();
                                 const avatarSrc = m.avatar || `mb-avatar/${m.name.toLowerCase()}.jpg`;
+                                const tagValue = m.memberTag || (m.isChild ? 'child' : 'adult');
+                                const hideContact = tagValue === 'baby' || tagValue === 'child';
+                                const badgeHtml = getMemberTagBadgeHtml(tagValue);
+                                const staggerDelay = Math.min(idx * 35, 210);
                                 return `
-                                    <div class="member-card bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex items-start justify-between gap-3">
+                                    <div style="animation-delay: ${staggerDelay}ms" class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex items-start justify-between gap-3">
                                         <div class="flex items-start gap-3.5 min-w-0">
-                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-slate-200 relative group">
-                                                <img src="${avatarSrc}" alt="${m.name}" class="w-full h-full object-cover aspect-square transition duration-300 group-hover:scale-110" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-slate-200 relative">
+                                                <img src="${avatarSrc}" alt="${m.name}" class="w-full h-full object-cover aspect-square" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
                                                 <span class="hidden">${initial}</span>
                                             </div>
                                             <div class="space-y-1 min-w-0">
-                                                <h4 class="font-bold text-slate-800 truncate">${m.name}</h4>
-                                                <a href="tel:${m.phone}" class="text-xs text-pastel-600 hover:underline block">
-                                                    <i class="fa-solid fa-phone mr-1"></i> ${m.phone}
-                                                </a>
-                                                <a href="${m.address}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-pastel-600 block truncate">
-                                                    <i class="fa-solid fa-location-dot mr-1"></i> Open Google Maps
-                                                </a>
+                                                <div class="flex items-center gap-2 flex-wrap">
+                                                    <h4 class="font-bold text-slate-800 truncate">${m.name}</h4>
+                                                    ${badgeHtml}
+                                                </div>
+                                                ${hideContact ? '' : `
+                                                    ${m.phone ? `<a href="tel:${m.phone}" class="text-xs text-pastel-600 hover:underline block"><i class="fa-solid fa-phone mr-1"></i> ${m.phone}</a>` : ''}
+                                                    ${m.address ? `<a href="${m.address}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-pastel-600 block truncate"><i class="fa-solid fa-location-dot mr-1"></i> Open Google Maps</a>` : ''}
+                                                `}
                                             </div>
                                         </div>
                                     </div>
@@ -716,7 +1504,7 @@
                 const safeVenue = e.venue.replace(/'/g, "\\'");
                 const safeAgenda = e.agenda.replace(/'/g, "\\'");
                 return `
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter space-y-3 flex flex-col justify-between">
                         <div class="space-y-2">
                             <div class="flex justify-between items-start gap-2">
                                 <h3 class="text-xl font-bold font-display text-slate-800">${e.title}</h3>
@@ -733,7 +1521,7 @@
                             <p class="text-sm text-slate-500">${e.agenda}</p>
                         </div>
                         <div class="pt-3 border-t border-slate-100">
-                            <button onclick="shareToWhatsApp('${safeTitle}', '${safeDate}', '${safeVenue}', '${safeAgenda}')" class="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                            <button onclick="shareToWhatsApp('${safeTitle}', '${safeDate}', '${safeVenue}', '${safeAgenda}')" class="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2">
                                 <i class="fa-brands fa-whatsapp text-base"></i> Share to WhatsApp Group
                             </button>
                         </div>
@@ -852,7 +1640,7 @@
             grid.innerHTML = Object.entries(grouped).map(([folderName, photos]) => {
                 const safeFolder = folderName.replace(/'/g, "\\'");
                 return `
-                <div class="space-y-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div class="space-y-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm anim-card-enter">
                     <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
                         <div class="flex items-center gap-2 min-w-0">
                             <i class="fa-solid fa-folder-open text-pastel-600 text-lg sm:text-xl flex-shrink-0"></i>
@@ -873,7 +1661,7 @@
                         ? `<p class="text-xs text-slate-400 italic py-2">Folder "${folderName}" created (0/20 photos).</p>`
                         : `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                             ${photos.map(p => `
-                                <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200 shadow-sm group">
+                                <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md hub-card-hover group">
                                     <img src="${p.url}" alt="${p.title}" class="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
                                     <div class="p-2.5 bg-white border-t border-slate-100">
                                         <h4 class="font-bold text-xs sm:text-sm text-slate-800 truncate">${p.title}</h4>
@@ -895,7 +1683,7 @@
                 const safeName = u.name.replace(/'/g, "\\'");
                 const isSelf = currentUser && currentUser.name && currentUser.name.trim().toLowerCase() === u.name.trim().toLowerCase();
                 return `
-                <tr>
+                <tr class="hover:bg-slate-50/70 transition">
                     <td class="p-3 font-semibold text-slate-800">${u.name}</td>
                     <td class="p-3 text-slate-500">${u.roleDesc}</td>
                     <td class="p-3 font-mono text-xs text-slate-600">${u.pass}</td>
@@ -906,6 +1694,11 @@
                     </td>
                     <td class="p-3 text-right">
                         <div class="inline-flex items-center justify-end gap-2">
+                            ${isAdmin ? `
+                                <button type="button" onclick="openEditMemberModal('${safeName}')" title="Edit All Details" class="px-2.5 py-1.5 text-xs font-bold text-pastel-700 hover:text-pastel-800 bg-pastel-50 hover:bg-pastel-100 rounded-lg transition inline-flex items-center gap-1">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
+                            ` : ''}
                             <select onchange="updateUserRole('${safeName}', this.value)" class="p-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none">
                                 <option value="member" ${u.role === 'member' ? 'selected' : ''}>Member</option>
                                 <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
@@ -923,17 +1716,7 @@
             }).join('');
         }
 
-        try {
-            if (typeof loadLocalCachedState === 'function') {
-                loadLocalCachedState();
-            }
-            if (typeof loadFromGoogleSheet === 'function') {
-                loadFromGoogleSheet(false);
-            }
-        } catch (initErr) {
-            console.warn("Initialization warning:", initErr);
-        }
+        loadLocalCachedState();
     </script>
 </body>
 </html>
-
