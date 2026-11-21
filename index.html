@@ -49,6 +49,39 @@
             pointer-events: none;
             user-select: none;
         }
+
+        /* Smooth Minimal Animations for Interactive UI */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Smooth UI Card & Button Hover Transitions */
+        .member-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .member-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(12, 163, 235, 0.12);
+            border-color: #7cd0fd;
+        }
+
+        .tab-btn, .mob-tab-btn, .filter-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .filter-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
@@ -406,7 +439,7 @@
     <!-- ALL JAVASCRIPT CODE INLINED & GOOGLE SHEETS SYNC -->
     <script>
         // നിങ്ങളുടെ Google Apps Script Web App URL
-        const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw-w-A-99fX3WtOa3I_OFNLwhlLH-J6VOhnn9HIkgs_Z5r9AxmDjed62OsnWLUc3kSJ/exec";
+        const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw9TZ5X2DgdofP5-pebX_lTommabkoqkexhRnwdER08hCoX4sqIvlfWZOhx9zVAgNGJcA/exec";
 
         // 1. EMBEDDED USER DATABASE
         const familyUsersDB = [
@@ -430,434 +463,7 @@
         let customFamilies = ["Sumesh's Family", "Sasidharan's Family"];
 
         // 3. EVENTS DATA
-        let familyEvents = [
-            { id: 1, title: "Annual Family Reunion", venue: "Grand Hotel Resort", agenda: "Get-together and dinner for all family members.", date: "Dec 25, 2026" }
-        ];
-
-        // 4. GALLERY DATA
-        let galleryFolders = ["Summer Gathering", "Holiday Celebration"];
-        let galleryPhotos = [
-            { id: 1, folder: "Summer Gathering", title: "Summer Gathering #1", url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=600&q=80" },
-            { id: 2, folder: "Holiday Celebration", title: "Holiday Celebration #1", url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80" }
-        ];
-
-        let currentUser = null;
-        let toastTimeout = null;
-        let selectedFamilyFilter = "ALL";
-        let isApplyingSheetSnapshot = false;
-
-        function setSheetBadge(mode, label) {
-            const badge = document.getElementById("cloudSyncBadge");
-            if (!badge) return;
-            if (mode === "live") {
-                badge.innerHTML = `<i class="fa-solid fa-table mr-1"></i> ${label}`;
-                badge.className = "text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
-            } else if (mode === "warn") {
-                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${label}`;
-                badge.className = "text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200";
-            } else {
-                badge.innerHTML = `<i class="fa-solid fa-table mr-1"></i> ${label}`;
-                badge.className = "text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200";
-            }
-        }
-
-        function buildHubPayload() {
-            return {
-                familyUsersDB,
-                familyMembers,
-                customFamilies,
-                familyEvents,
-                galleryFolders,
-                galleryPhotos,
-                updatedAt: Date.now()
-            };
-        }
-
-        // PUSH CHANGES TO GOOGLE SHEET
-        function pushToGoogleSheet(payload) {
-            if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
-                setSheetBadge("warn", "Add Sheet URL");
-                return;
-            }
-
-            setSheetBadge("sync", "Saving to Sheet...");
-            fetch(GOOGLE_SHEET_WEBAPP_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ state: payload })
-            })
-            .then(() => {
-                setSheetBadge("live", "Sheet Updated");
-            })
-            .catch((err) => {
-                console.warn("Google Sheet write error:", err);
-                setSheetBadge("warn", "Sheet Offline");
-            });
-        }
-
-        // LOAD LATEST DATA FROM GOOGLE SHEET
-        function loadFromGoogleSheet(showFeedback = false) {
-            if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
-                setSheetBadge("warn", "Add Sheet URL");
-                if (showFeedback) showToast("Please set GOOGLE_SHEET_WEBAPP_URL in code first!");
-                return;
-            }
-
-            setSheetBadge("sync", "Loading Sheet...");
-            fetch(`${GOOGLE_SHEET_WEBAPP_URL}?t=${Date.now()}`, { method: "GET" })
-                .then(res => res.json())
-                .then(data => {
-                    const parsed = data && data.state ? data.state : data;
-                    if (parsed && (Array.isArray(parsed.familyMembers) || Array.isArray(parsed.familyUsersDB))) {
-                        localStorage.setItem("familyHub_CompleteState_v1", JSON.stringify(parsed));
-                        applySyncedPayload(parsed);
-                        setSheetBadge("live", "Sheet Synced");
-                        if (showFeedback) showToast("Synced latest data from Google Sheet!");
-                    } else {
-                        setSheetBadge("live", "Sheet Ready");
-                        if (showFeedback) showToast("Sheet connected (no saved rows yet).");
-                    }
-                })
-                .catch((err) => {
-                    console.warn("Google Sheet read error:", err);
-                    setSheetBadge("warn", "Sheet Check Needed");
-                    if (showFeedback) showToast("Could not read Google Sheet. Check Web App access.");
-                });
-        }
-
-        // SAVE & SYNC HUB STATE
-        function syncHubState(skipSheetWrite = false) {
-            try {
-                const payload = buildHubPayload();
-                localStorage.setItem('familyHub_CompleteState_v1', JSON.stringify(payload));
-
-                if (!skipSheetWrite && !isApplyingSheetSnapshot) {
-                    pushToGoogleSheet(payload);
-                }
-            } catch (err) {
-                console.warn("State sync warning:", err);
-            }
-        }
-
-        // APPLY LOADED / SYNCED STATE TO ARRAYS & UI
-        function applySyncedPayload(parsed) {
-            if (!parsed || typeof parsed !== 'object') return;
-            isApplyingSheetSnapshot = true;
-            try {
-                if (Array.isArray(parsed.familyUsersDB) && parsed.familyUsersDB.length > 0) {
-                    familyUsersDB.length = 0;
-                    parsed.familyUsersDB.forEach(u => familyUsersDB.push(u));
-                }
-                if (Array.isArray(parsed.familyMembers)) familyMembers = parsed.familyMembers;
-                if (Array.isArray(parsed.customFamilies)) customFamilies = parsed.customFamilies;
-                if (Array.isArray(parsed.familyEvents)) familyEvents = parsed.familyEvents;
-                if (Array.isArray(parsed.galleryFolders)) galleryFolders = parsed.galleryFolders;
-                if (Array.isArray(parsed.galleryPhotos)) galleryPhotos = parsed.galleryPhotos;
-
-                if (currentUser) {
-                    const refreshedUser = familyUsersDB.find(
-                        u => u.name.trim().toLowerCase() === currentUser.name.trim().toLowerCase()
-                    );
-                    if (refreshedUser) {
-                        if (refreshedUser.role === 'banned') {
-                            handleLogout();
-                            return;
-                        }
-                        currentUser = refreshedUser;
-                        const userDisplay = document.getElementById('userDisplay');
-                        const roleDisplay = document.getElementById('roleDisplay');
-                        if (userDisplay) userDisplay.innerText = currentUser.name;
-                        if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
-                    }
-                    renderDirectory();
-                    renderEvents();
-                    populateFolderSelect();
-                    renderGallery();
-                    renderAdminTable();
-                    populateEditAvatarDropdown();
-                }
-            } finally {
-                isApplyingSheetSnapshot = false;
-            }
-        }
-
-        function loadLocalCachedState() {
-            try {
-                const raw = localStorage.getItem('familyHub_CompleteState_v1');
-                if (!raw) return;
-                const parsed = JSON.parse(raw);
-                applySyncedPayload(parsed);
-            } catch (err) {
-                console.warn("Local cache load error:", err);
-            }
-        }
-
-        function showToast(message) {
-            try {
-                const banner = document.getElementById('toastBanner');
-                const msgEl = document.getElementById('toastMessage');
-                if (!banner || !msgEl) return;
-
-                msgEl.innerText = message;
-                banner.classList.remove('hidden');
-
-                if (toastTimeout) clearTimeout(toastTimeout);
-                toastTimeout = setTimeout(() => {
-                    banner.classList.add('hidden');
-                }, 3500);
-            } catch (err) {
-                console.error("Toast error:", err);
-            }
-        }
-
-        function setGalleryStatus(message, isError) {
-            const statusEl = document.getElementById('galleryStatusMsg');
-            if (!statusEl) return;
-
-            if (!message) {
-                statusEl.classList.add('hidden');
-                statusEl.innerText = '';
-                return;
-            }
-
-            statusEl.classList.remove('hidden', 'bg-rose-50', 'text-rose-700', 'border-rose-200', 'bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
-            if (isError) {
-                statusEl.classList.add('bg-rose-50', 'text-rose-700', 'border-rose-200');
-            } else {
-                statusEl.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
-            }
-            statusEl.innerText = message;
-        }
-
-        function handleLoginSubmit(event) {
-            try {
-                if (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-
-                const usernameEl = document.getElementById('usernameInput');
-                const passwordEl = document.getElementById('passwordInput');
-                const errorEl = document.getElementById('loginError');
-
-                if (!usernameEl || !passwordEl) return false;
-
-                const enteredName = usernameEl.value.trim();
-                const enteredPass = passwordEl.value.trim();
-
-                const foundUser = familyUsersDB.find(
-                    u => u.name.trim().toLowerCase() === enteredName.toLowerCase() && String(u.pass).trim() === enteredPass
-                );
-
-                if (!foundUser) {
-                    if (errorEl) {
-                        errorEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Invalid name or password!';
-                        errorEl.classList.remove('hidden');
-                    }
-                    return false;
-                }
-
-                if (foundUser.role === 'banned') {
-                    if (errorEl) {
-                        errorEl.innerHTML = '<i class="fa-solid fa-ban mr-1 font-bold"></i> Account Banned! You have been restricted by the administrator.';
-                        errorEl.classList.remove('hidden');
-                    }
-                    return false;
-                }
-
-                currentUser = foundUser;
-                if (errorEl) errorEl.classList.add('hidden');
-
-                const loginModal = document.getElementById('loginModal');
-                const appContainer = document.getElementById('appContainer');
-
-                if (loginModal) {
-                    loginModal.style.display = 'none';
-                    loginModal.classList.add('hidden');
-                }
-                if (appContainer) {
-                    appContainer.classList.remove('blurred-content');
-                    appContainer.style.filter = 'none';
-                    appContainer.style.pointerEvents = 'auto';
-                }
-
-                const userDisplay = document.getElementById('userDisplay');
-                const roleDisplay = document.getElementById('roleDisplay');
-                if (userDisplay) userDisplay.innerText = currentUser.name;
-                if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
-
-                if (currentUser.role === 'admin') {
-                    document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                } else {
-                    document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-                }
-
-                initApp();
-                return false;
-            } catch (err) {
-                console.error("Login error:", err);
-                return false;
-            }
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            const loginModal = document.getElementById('loginModal');
-            const appContainer = document.getElementById('appContainer');
-
-            if (loginModal) {
-                loginModal.style.display = 'flex';
-                loginModal.classList.remove('hidden');
-            }
-            if (appContainer) {
-                appContainer.classList.add('blurred-content');
-            }
-
-            const uInput = document.getElementById('usernameInput');
-            const pInput = document.getElementById('passwordInput');
-            if (uInput) uInput.value = '';
-            if (pInput) pInput.value = '';
-            const errorEl = document.getElementById('loginError');
-            if (errorEl) errorEl.classList.add('hidden');
-        }
-
-        function toggleCustomFamilyInput(mode) {
-            const selectEl = document.getElementById(mode === 'new' ? 'newMemHead' : 'editMemHead');
-            const wrapperEl = document.getElementById(mode === 'new' ? 'newCustomFamilyWrapper' : 'editCustomFamilyWrapper');
-            const inputEl = document.getElementById(mode === 'new' ? 'newCustomFamilyHead' : 'editCustomFamilyHead');
-
-            if (selectEl && wrapperEl) {
-                if (selectEl.value === 'Other Family') {
-                    wrapperEl.classList.remove('hidden');
-                    if (inputEl) inputEl.required = true;
-                } else {
-                    wrapperEl.classList.add('hidden');
-                    if (inputEl) {
-                        inputEl.required = false;
-                        inputEl.value = '';
-                    }
-                }
-            }
-        }
-
-        function resolveFamilySection(selectedHead, customHeadRaw) {
-            if (selectedHead === 'Other Family') {
-                const cleanName = (customHeadRaw || '').trim();
-                if (!cleanName) return "Other Family";
-                if (/'s\s+Family$/i.test(cleanName)) {
-                    return cleanName;
-                }
-                const suffix = cleanName.toLowerCase().endsWith('s') ? "'" : "'s";
-                return `${cleanName}${suffix} Family`;
-            }
-            return selectedHead;
-        }
-
-        function populateEditAvatarDropdown() {
-            const select = document.getElementById('editAvatarMemberSelect');
-            if (!select) return;
-            const currentVal = select.value;
-            select.innerHTML = '<option value="">-- Choose Member --</option>' +
-                familyMembers.map(m => `<option value="${m.id}">${m.name} (${m.headOfFamily})</option>`).join('');
-            if (currentVal && familyMembers.some(m => String(m.id) === String(currentVal))) {
-                select.value = currentVal;
-            }
-        }
-
-        function loadMemberAvatarToEdit(id) {
-            const input = document.getElementById('editAvatarPathInput');
-            if (!input) return;
-            if (!id) {
-                input.value = '';
-                return;
-            }
-            const member = familyMembers.find(m => String(m.id) === String(id));
-            if (member) {
-                input.value = member.avatar || `mb-avatar/${member.name.toLowerCase()}.jpg`;
-            }
-        }
-
-        function handleEditAvatarSubmit(e) {
-            try {
-                e.preventDefault();
-                const id = document.getElementById('editAvatarMemberSelect').value;
-                const newAvatar = document.getElementById('editAvatarPathInput').value.trim();
-
-                if (!id || !newAvatar) return false;
-
-                const member = familyMembers.find(m => String(m.id) === String(id));
-                if (member) {
-                    member.avatar = newAvatar;
-                    showToast(`Avatar updated for "${member.name}"!`);
-                    renderDirectory();
-                    syncHubState();
-                }
-                return false;
-            } catch (err) {
-                console.error("Avatar update error:", err);
-                return false;
-            }
-        }
-
-        function handleAddMemberSubmit(e) {
-            try {
-                e.preventDefault();
-                const name = document.getElementById('newMemName').value.trim();
-                const manualPass = document.getElementById('newMemPass').value.trim() || '7777';
-                const selectedHead = document.getElementById('newMemHead').value;
-                const customHead = document.getElementById('newCustomFamilyHead') ? document.getElementById('newCustomFamilyHead').value.trim() : '';
-                const phone = document.getElementById('newMemPhone').value.trim();
-                const address = document.getElementById('newMemAddress').value.trim() || 'https://www.google.com/maps';
-                const role = document.getElementById('newMemRole').value;
-                const avatar = document.getElementById('newMemAvatar').value.trim() || `mb-avatar/${name.toLowerCase()}.jpg`;
-
-                if (!name) return false;
-
-                const finalFamilyGroup = resolveFamilySection(selectedHead, customHead);
-
-                if (!customFamilies.includes(finalFamilyGroup)) {
-                    customFamilies.push(finalFamilyGroup);
-                }
-
-                familyMembers.push({
-                    id: Date.now() + Math.floor(Math.random() * 1000),
-                    name: name,
-                    headOfFamily: finalFamilyGroup,
-                    phone: phone,
-                    address: address,
-                    avatar: avatar
-                });
-
-                const existingUser = familyUsersDB.find(u => u.name.trim().toLowerCase() === name.toLowerCase());
-                if (!existingUser) {
-                    familyUsersDB.push({
-                        name: name,
-                        roleDesc: finalFamilyGroup,
-                        role: role,
-                        pass: manualPass
-                    });
-                } else {
-                    existingUser.role = role;
-                    existingUser.roleDesc = finalFamilyGroup;
-                    existingUser.pass = manualPass;
-                }
-
-                showToast(`Member "${name}" added & syncing to Google Sheet!`);
-                e.target.reset();
-                toggleCustomFamilyInput('new');
-
-                renderDirectory();
-                renderAdminTable();
-                populateEditAvatarDropdown();
-                syncHubState();
-                return false;
-            } catch (err) {
-                console.error("Add member error:", err);
-                return false;
-            }
-        }
-
+        // UPDATED CLEAN DELETE FUNCTION: DELETES MEMBER FROM BOTH USERS DB & DIRECTORY CARDS
         function handleDeleteMember(userName) {
             try {
                 if (!currentUser || currentUser.role !== 'admin') return;
@@ -868,6 +474,7 @@
                     return;
                 }
 
+                // 1. Users DB-ൽ നിന്ന് മായ്ക്കുന്നു
                 const userIdx = familyUsersDB.findIndex(
                     u => u.name.trim().toLowerCase() === userName.trim().toLowerCase()
                 );
@@ -875,11 +482,12 @@
                     familyUsersDB.splice(userIdx, 1);
                 }
 
+                // 2. Directory Members-ൽ നിന്നും മായ്ക്കുന്നു (Fixes duplicate directory cards)
                 familyMembers = familyMembers.filter(
                     m => m.name.trim().toLowerCase() !== userName.trim().toLowerCase()
                 );
 
-                showToast(`Member "${userName}" deleted!`);
+                showToast(`Member "${userName}" deleted from Admin Portal & Directory!`);
                 renderDirectory();
                 renderAdminTable();
                 populateEditAvatarDropdown();
@@ -909,16 +517,16 @@
             }
 
             const allBtnClass = selectedFamilyFilter === "ALL"
-                ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition"
-                : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
+                ? "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-md shadow-pastel-500/20 transition scale-105"
+                : "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition hover:scale-105";
 
             let html = `<button type="button" onclick="selectFamilyFilter('ALL')" class="${allBtnClass}">All</button>`;
 
             html += familyNames.map(fam => {
                 const isActive = selectedFamilyFilter === fam;
                 const cls = isActive
-                    ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition"
-                    : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
+                    ? "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-md shadow-pastel-500/20 transition scale-105"
+                    : "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition hover:scale-105";
                 const safeFam = fam.replace(/'/g, "\\'");
                 return `<button type="button" onclick="selectFamilyFilter('${safeFam}')" class="${cls}">${fam}</button>`;
             }).join('');
@@ -1048,7 +656,7 @@
 
             for (const [head, members] of entries) {
                 const groupEl = document.createElement('div');
-                groupEl.className = "space-y-4";
+                groupEl.className = "space-y-4 animate-fade-in-up";
                 groupEl.innerHTML = `
                     <h3 class="text-lg font-bold font-display text-pastel-800 border-b border-slate-200 pb-2 flex items-center justify-between">
                         <span>${head}</span>
@@ -1061,10 +669,10 @@
                                 const initial = m.name.charAt(0).toUpperCase();
                                 const avatarSrc = m.avatar || `mb-avatar/${m.name.toLowerCase()}.jpg`;
                                 return `
-                                    <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex items-start justify-between gap-3">
+                                    <div class="member-card bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex items-start justify-between gap-3">
                                         <div class="flex items-start gap-3.5 min-w-0">
-                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-slate-200 relative">
-                                                <img src="${avatarSrc}" alt="${m.name}" class="w-full h-full object-cover aspect-square" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-slate-200 relative group">
+                                                <img src="${avatarSrc}" alt="${m.name}" class="w-full h-full object-cover aspect-square transition duration-300 group-hover:scale-110" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
                                                 <span class="hidden">${initial}</span>
                                             </div>
                                             <div class="space-y-1 min-w-0">
@@ -1321,3 +929,8 @@
     </script>
 </body>
 </html>
+```ofs
+
+---
+
+ഇതോടെ Admin Portal-ൽ നിന്നും ഒരു ആളെ ഡിലീറ്റ് ചെയ്താൽ അയാളുടെ പേജ് കാർഡും ഡാറ്റാബേസിലെ പാസ്‌വേഡും അടക്കം പൂർണ്ണമായും ക്ലീൻ ആകും. ഷീറ്റിൽ നിങ്ങൾ വരുത്തുന്ന ഏത് തിരുത്തലുകളും `Refresh Sheet` ക്ലിക്ക് ചെയ്യുമ്പോൾ തിരികെ കൃത്യമായി ആ പേജിൽ ലൈവ് ആയി വരികയും ചെയ്യും!
