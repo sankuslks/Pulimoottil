@@ -13,16 +13,22 @@
                 extend: {
                     colors: {
                         pastel: {
-                            50: '#f0f7ff',
-                            100: '#e0f0fe',
-                            200: '#bae2fd',
-                            300: '#7cd0fd',
-                            400: '#36bafb',
-                            500: '#0ca3eb',
-                            600: '#0283c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e'
+                            50: '#f4f8f6',
+                            100: '#e3eee9',
+                            200: '#c6ded4',
+                            300: '#a0c6b7',
+                            400: '#75aa97',
+                            500: '#548f7d',
+                            600: '#407364',
+                            700: '#355d52',
+                            800: '#2c4b43',
+                            900: '#264039'
+                        },
+                        sand: {
+                            50: '#fbf9f5',
+                            100: '#f6f2e9',
+                            200: '#eae2d2',
+                            300: '#dbcbb3'
                         }
                     },
                     fontFamily: {
@@ -74,16 +80,16 @@
         }
     </style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
+<body class="bg-sand-50 font-sans text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
 
     <!-- LOGIN MODAL / OVERLAY -->
     <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
-        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full p-6 text-center anim-card-enter">
+        <div class="bg-white rounded-3xl shadow-2xl border border-sand-200 max-w-md w-full p-6 text-center anim-card-enter">
             <div class="w-16 h-16 bg-pastel-100 text-pastel-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner overflow-hidden border border-pastel-200 relative">
                 <img id="loginLogoImg" src="mb-avatar/logo.png" alt="Family Hub Logo" class="w-full h-full object-cover" onerror="this.classList.add('hidden'); document.getElementById('loginLogoFallback').classList.remove('hidden');">
                 <i id="loginLogoFallback" class="fa-solid fa-user-lock hidden"></i>
             </div>
-            <h2 class="text-2xl font-bold font-display text-slate-800 mb-1">Welcome to Our Family Hub!</h2>
+            <h2 class="text-2xl font-bold font-display text-pastel-900 mb-1">Welcome to Our Family Hub!</h2>
             <p class="text-slate-500 text-sm mb-6">Please enter your name and password to access the private portal.</p>
 
             <form id="loginForm" onsubmit="return handleLoginSubmit(event);" class="space-y-4 text-left">
@@ -91,7 +97,7 @@
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">YOUR NAME</label>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-400"></i>
-                        <input type="text" id="usernameInput" required placeholder="e.g. Lunar or Sumesh" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-pastel-400 focus:border-pastel-400 outline-none transition text-slate-800 text-base font-medium">
+                        <input type="text" id="usernameInput" required placeholder="e.g. Lunar or Sumesh" class="w-full pl-10 pr-4 py-3 bg-sand-50 border border-sand-200 rounded-xl focus:ring-2 focus:ring-pastel-400 focus:border-pastel-400 outline-none transition text-slate-800 text-base font-medium">
                     </div>
                 </div>
 
@@ -99,15 +105,15 @@
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">SECURITY PASSWORD</label>
                     <div class="relative">
                         <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-400"></i>
-                        <input type="password" id="passwordInput" required placeholder="Enter password" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-pastel-400 focus:border-pastel-400 outline-none transition text-slate-800 text-base font-medium">
+                        <input type="password" id="passwordInput" required placeholder="Enter password" class="w-full pl-10 pr-4 py-3 bg-sand-50 border border-sand-200 rounded-xl focus:ring-2 focus:ring-pastel-400 focus:border-pastel-400 outline-none transition text-slate-800 text-base font-medium">
                     </div>
                 </div>
 
-                <div id="loginError" class="hidden text-xs text-rose-500 font-semibold bg-rose-50 p-2.5 rounded-lg border border-rose-200 text-center">
+                <div id="loginError" class="hidden text-xs text-rose-600 font-semibold bg-rose-50 p-2.5 rounded-lg border border-rose-200 text-center">
                     <i class="fa-solid fa-triangle-exclamation mr-1"></i> Invalid name or password!
                 </div>
 
-                <button type="submit" class="w-full py-3.5 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.98] text-white font-semibold rounded-xl shadow-md shadow-pastel-500/20 transition flex items-center justify-center gap-2 text-base">
+                <button type="submit" class="w-full py-3.5 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.98] text-white font-semibold rounded-xl shadow-md shadow-pastel-600/20 transition flex items-center justify-center gap-2 text-base">
                     Enter Family Portal <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
             </form>
@@ -133,17 +139,20 @@
 
                 <!-- Navigation Tabs (Desktop/Tablet) -->
                 <nav class="hidden md:flex space-x-1">
-                    <button onclick="switchTab('directory')" id="tab-directory" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition bg-white/20 text-white">
-                        <i class="fa-solid fa-users mr-2"></i>Directory
+                    <button onclick="switchTab('directory')" id="tab-directory" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium transition bg-white/20 text-white">
+                        <i class="fa-solid fa-users mr-1.5"></i>Directory
                     </button>
-                    <button onclick="switchTab('events')" id="tab-events" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-pastel-100">
-                        <i class="fa-solid fa-bullhorn mr-2"></i>Functions & Alerts
+                    <button onclick="switchTab('events')" id="tab-events" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-pastel-100">
+                        <i class="fa-solid fa-bullhorn mr-1.5"></i>Functions & Alerts
                     </button>
-                    <button onclick="switchTab('gallery')" id="tab-gallery" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-pastel-100">
-                        <i class="fa-solid fa-images mr-2"></i>Gallery
+                    <button onclick="switchTab('milestones')" id="tab-milestones" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-pastel-100">
+                        <i class="fa-solid fa-award mr-1.5"></i>Milestones
                     </button>
-                    <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn admin-only hidden px-4 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-amber-200">
-                        <i class="fa-solid fa-shield-halved mr-2"></i>Admin Portal
+                    <button onclick="switchTab('gallery')" id="tab-gallery" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-pastel-100">
+                        <i class="fa-solid fa-images mr-1.5"></i>Gallery
+                    </button>
+                    <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn admin-only hidden px-3.5 py-2 rounded-lg text-sm font-medium transition hover:bg-white/10 text-amber-200">
+                        <i class="fa-solid fa-shield-halved mr-1.5"></i>Admin Portal
                     </button>
                 </nav>
 
@@ -164,21 +173,25 @@
         </header>
 
         <!-- MOBILE BOTTOM NAVIGATION BAR -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 px-2 py-1.5 flex justify-around items-center shadow-lg">
-            <button onclick="switchTab('directory')" id="mob-tab-directory" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-pastel-700 font-medium transition">
-                <i class="fa-solid fa-users text-lg"></i>
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-sand-200 z-40 px-1 py-1.5 flex justify-around items-center shadow-lg">
+            <button onclick="switchTab('directory')" id="mob-tab-directory" class="mob-tab-btn flex flex-col items-center py-1 px-2 rounded-xl text-pastel-700 font-medium transition">
+                <i class="fa-solid fa-users text-base"></i>
                 <span class="text-[10px] mt-0.5">Directory</span>
             </button>
-            <button onclick="switchTab('events')" id="mob-tab-events" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium transition">
-                <i class="fa-solid fa-bullhorn text-lg"></i>
+            <button onclick="switchTab('events')" id="mob-tab-events" class="mob-tab-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-500 font-medium transition">
+                <i class="fa-solid fa-bullhorn text-base"></i>
                 <span class="text-[10px] mt-0.5">Functions</span>
             </button>
-            <button onclick="switchTab('gallery')" id="mob-tab-gallery" class="mob-tab-btn flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 font-medium transition">
-                <i class="fa-solid fa-images text-lg"></i>
+            <button onclick="switchTab('milestones')" id="mob-tab-milestones" class="mob-tab-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-500 font-medium transition">
+                <i class="fa-solid fa-award text-base"></i>
+                <span class="text-[10px] mt-0.5">Milestones</span>
+            </button>
+            <button onclick="switchTab('gallery')" id="mob-tab-gallery" class="mob-tab-btn flex flex-col items-center py-1 px-2 rounded-xl text-slate-500 font-medium transition">
+                <i class="fa-solid fa-images text-base"></i>
                 <span class="text-[10px] mt-0.5">Gallery</span>
             </button>
-            <button onclick="switchTab('admin')" id="mob-tab-admin" class="mob-tab-btn admin-only hidden flex flex-col items-center py-1 px-3 rounded-xl text-amber-600 font-medium transition">
-                <i class="fa-solid fa-shield-halved text-lg"></i>
+            <button onclick="switchTab('admin')" id="mob-tab-admin" class="mob-tab-btn admin-only hidden flex flex-col items-center py-1 px-2 rounded-xl text-amber-600 font-medium transition">
+                <i class="fa-solid fa-shield-halved text-base"></i>
                 <span class="text-[10px] mt-0.5">Admin</span>
             </button>
         </nav>
@@ -188,22 +201,36 @@
 
             <!-- 1. DIRECTORY SECTION -->
             <section id="section-directory" class="space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
+                <!-- Birthdays & Anniversaries Reminder Banner -->
+                <div class="bg-gradient-to-r from-pastel-50 via-white to-sand-100 p-4 sm:p-5 rounded-3xl shadow-sm border border-pastel-200">
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <h3 class="text-sm sm:text-base font-bold font-display text-pastel-900 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-xl bg-pastel-100 text-pastel-700 flex items-center justify-center">
+                                <i class="fa-solid fa-cake-candles text-xs"></i>
+                            </span>
+                            Birthdays & Anniversaries Reminders
+                        </h3>
+                        <span class="text-[11px] font-semibold text-pastel-700 bg-pastel-100 px-2.5 py-0.5 rounded-full">Celebrations</span>
+                    </div>
+                    <div id="celebrationsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Directory</h2>
-                        <p class="text-slate-500 text-xs sm:text-sm">Grouped by Household</p>
+                        <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Directory</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm">Grouped by Household with Blood Group & Location Tags</p>
                     </div>
 
                     <div class="w-full sm:w-auto">
                         <div class="relative w-full">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                            <input type="text" id="directorySearch" onkeyup="filterDirectory()" placeholder="Search members..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-pastel-400 outline-none transition">
+                            <input type="text" id="directorySearch" onkeyup="filterDirectory()" placeholder="Search name, city, blood group..." class="w-full pl-10 pr-4 py-2.5 bg-sand-50 border border-sand-200 rounded-xl text-sm focus:ring-2 focus:ring-pastel-400 outline-none transition">
                         </div>
                     </div>
                 </div>
 
                 <!-- Sort / Filter By Family Bar -->
-                <div class="bg-white p-3 sm:px-5 sm:py-3.5 rounded-2xl shadow-sm border border-slate-200/60 flex flex-wrap items-center gap-2">
+                <div class="bg-white p-3 sm:px-5 sm:py-3.5 rounded-2xl shadow-sm border border-sand-200 flex flex-wrap items-center gap-2">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1 flex items-center gap-1.5">
                         <i class="fa-solid fa-arrow-down-a-z text-pastel-600"></i> Sort / Family:
                     </span>
@@ -216,23 +243,23 @@
 
             <!-- 2. EVENTS SECTION -->
             <section id="section-events" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Functions & Notifications</h2>
+                        <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Functions & Notifications</h2>
                         <p class="text-slate-500 text-xs sm:text-sm">Upcoming events and broadcast alerts</p>
                     </div>
                 </div>
 
                 <!-- Admin Broadcast Event Form -->
-                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-2xl border border-amber-200 shadow-sm space-y-4">
+                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-3xl border border-amber-200 shadow-sm space-y-4">
                     <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i class="fa-solid fa-bullhorn text-amber-500"></i> Post New Function / Notification
                     </h3>
                     <form onsubmit="return handleAddEvent(event);" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                        <input type="text" id="evTitle" required placeholder="Event Title (e.g. Wedding Reception)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
-                        <input type="text" id="evDate" required placeholder="Date (e.g. Dec 25, 2026)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
-                        <input type="text" id="evVenue" required placeholder="Venue (e.g. Community Hall)" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
-                        <input type="text" id="evAgenda" required placeholder="Agenda / Details" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="evTitle" required placeholder="Event Title (e.g. Wedding Reception)" class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="evDate" required placeholder="Date (e.g. Dec 25, 2026)" class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="evVenue" required placeholder="Venue (e.g. Community Hall)" class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="evAgenda" required placeholder="Agenda / Details" class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                         <button type="submit" class="sm:col-span-2 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
                             <i class="fa-solid fa-paper-plane mr-1"></i> Broadcast Event
                         </button>
@@ -242,24 +269,59 @@
                 <div id="eventsFeed" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"></div>
             </section>
 
-            <!-- 3. GALLERY SECTION -->
-            <section id="section-gallery" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60">
+            <!-- 3. FAMILY MILESTONES / ACHIEVEMENT WALL SECTION -->
+            <section id="section-milestones" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
                     <div>
-                        <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Family Photo Gallery</h2>
-                        <p class="text-slate-500 text-xs sm:text-sm">Organized folders with a maximum limit of 20 photos per folder</p>
+                        <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Milestone & Achievement Wall</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm">Celebrate new jobs, graduations, homes, travels, and happy moments</p>
+                    </div>
+                </div>
+
+                <!-- Add Milestone Form (Available to Logged-in Family Members) -->
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-sand-200 shadow-sm space-y-4">
+                    <h3 class="text-md sm:text-lg font-bold font-display text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-sparkles text-amber-500"></i> Share a Happy Moment or Achievement
+                    </h3>
+                    <form onsubmit="return handleAddMilestone(event);" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                        <input type="text" id="msMemberName" required placeholder="Member Name (e.g. Kaashi)" class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <select id="msCategory" required class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
+                            <option value="New Job">New Job</option>
+                            <option value="Graduation">Graduation</option>
+                            <option value="New Home">New Home</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Special Achievement">Special Achievement</option>
+                        </select>
+                        <input type="text" id="msHeadline" required placeholder="Headline (e.g. Graduated with Distinction)" class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="msDate" placeholder="Date (e.g. Nov 2026)" class="p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <input type="text" id="msNote" required placeholder="Share details or congratulations note..." class="sm:col-span-2 lg:col-span-3 p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                        <button type="submit" class="py-2.5 px-4 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.99] text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-heart"></i> Post Milestone
+                        </button>
+                    </form>
+                </div>
+
+                <div id="milestonesFeed" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"></div>
+            </section>
+
+            <!-- 4. GALLERY SECTION -->
+            <section id="section-gallery" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Photo Gallery</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm">Click any photo to view in full aspect ratio, browse next/prev, or download</p>
                     </div>
                 </div>
 
                 <!-- ADMIN GALLERY MANAGEMENT (CREATE FOLDER & UPLOAD PHOTO) -->
-                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-2xl border border-amber-200 shadow-sm space-y-6">
+                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-3xl border border-amber-200 shadow-sm space-y-6">
                     <!-- Create New Folder -->
                     <div class="space-y-3 border-b border-slate-100 pb-5">
                         <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-folder-plus text-pastel-600"></i> Create New Gallery Folder
                         </h3>
                         <form onsubmit="return handleCreateFolder(event);" class="flex flex-col sm:flex-row gap-3 text-sm">
-                            <input type="text" id="newFolderName" required placeholder="Folder Name (e.g. Wedding Ceremony)" class="flex-1 p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            <input type="text" id="newFolderName" required placeholder="Folder Name (e.g. Wedding Ceremony)" class="flex-1 p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             <button type="submit" class="px-5 py-2.5 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.98] text-white font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-plus"></i> Create Folder
                             </button>
@@ -274,18 +336,18 @@
                         <form onsubmit="return handleUploadPhoto(event);" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Select Folder</label>
-                                <select id="galFolder" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <select id="galFolder" required class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                                     <option value="Summer Gathering">Summer Gathering</option>
                                     <option value="Holiday Celebration">Holiday Celebration</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Photo Title</label>
-                                <input type="text" id="galTitle" required placeholder="e.g. Stage Ceremony" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <input type="text" id="galTitle" required placeholder="e.g. Stage Ceremony" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Photo URL / Path</label>
-                                <input type="text" id="galUrl" required placeholder="https://... or wedding/photo1.jpg" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <input type="text" id="galUrl" required placeholder="https://... or wedding/photo1.jpg" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
                             <button type="submit" class="sm:col-span-2 lg:col-span-3 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
                                 <i class="fa-solid fa-plus mr-1"></i> Add Photo to Folder
@@ -300,13 +362,13 @@
                 <div id="galleryGrid" class="space-y-6 sm:space-y-8"></div>
             </section>
 
-            <!-- 4. ADMIN SECTION -->
+            <!-- 5. ADMIN SECTION -->
             <section id="section-admin" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200/60 space-y-6">
+                <div class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200 space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-800">Administrator Console</h2>
-                            <p class="text-slate-500 text-xs sm:text-sm">Manage user access, add new members, and edit member avatars</p>
+                            <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Administrator Console</h2>
+                            <p class="text-slate-500 text-xs sm:text-sm">Manage user access, add new members, celebrations, blood groups, and avatars</p>
                         </div>
                         <span class="self-start sm:self-auto px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-200">
                             <i class="fa-solid fa-shield-halved mr-1"></i> Admin Privileges Active
@@ -314,7 +376,7 @@
                     </div>
 
                     <!-- EDIT MEMBER AVATAR FORM -->
-                    <div class="bg-amber-50/60 p-4 sm:p-5 rounded-xl border border-amber-200 space-y-4">
+                    <div class="bg-amber-50/60 p-4 sm:p-5 rounded-2xl border border-amber-200 space-y-4">
                         <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-image text-amber-600"></i> Edit Member Avatar
                         </h3>
@@ -336,60 +398,82 @@
                     </div>
 
                     <!-- ADD NEW MEMBER FORM -->
-                    <div class="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
+                    <div class="bg-sand-50 p-4 sm:p-5 rounded-2xl border border-sand-200 space-y-4">
                         <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-user-plus text-pastel-600"></i> Add New Family Member & Login Credentials
                         </h3>
-                        <form onsubmit="return handleAddMemberSubmit(event);" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <form onsubmit="return handleAddMemberSubmit(event);" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Member Name (Login Username)</label>
-                                <input type="text" id="newMemName" required placeholder="e.g. Rahul" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <input type="text" id="newMemName" required placeholder="e.g. Rahul" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Member Tag</label>
-                                <select id="newMemTag" onchange="toggleMemberTagFields()" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
+                                <select id="newMemTag" onchange="toggleMemberTagFields()" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
                                     <option value="adult">Adult</option>
                                     <option value="baby">Baby</option>
                                     <option value="child">Child</option>
                                 </select>
                             </div>
                             <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Blood Group</label>
+                                <select id="newMemBlood" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
+                                    <option value="">Not Specified</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                            <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Login Password (Manual)</label>
-                                <input type="text" id="newMemPass" required placeholder="e.g. 7777 or custom password" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <input type="text" id="newMemPass" required placeholder="e.g. 7777 or custom password" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Household / Family Base</label>
-                                <select id="newMemHead" onchange="toggleCustomFamilyInput('new')" required class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <select id="newMemHead" onchange="toggleCustomFamilyInput('new')" required class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                                     <option value="Sumesh's Family">Sumesh's Family</option>
                                     <option value="Sasidharan's Family">Sasidharan's Family</option>
                                     <option value="Other Family">Other Family</option>
                                 </select>
                             </div>
-                            <div id="newCustomFamilyWrapper" class="hidden sm:col-span-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Birthday / Anniversary (Optional)</label>
+                                <input type="text" id="newMemCelebration" placeholder="e.g. B'day: Dec 12 or Anniv: May 04" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div id="newCustomFamilyWrapper" class="hidden sm:col-span-2 lg:col-span-3">
                                 <label class="block text-xs font-semibold text-pastel-700 mb-1">New Family Head Name (Creates "[Name]'s Family" section)</label>
                                 <input type="text" id="newCustomFamilyHead" placeholder="e.g. Rahul (becomes Rahul's Family)" class="w-full p-2.5 bg-pastel-50/50 border border-pastel-300 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
                             <div id="newMemPhoneWrapper">
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Phone Number</label>
-                                <input type="text" id="newMemPhone" required placeholder="+91 9876543210" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <input type="text" id="newMemPhone" required placeholder="+91 9876543210" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                            </div>
+                            <div id="newMemLocationTagWrapper">
+                                <label class="block text-xs font-semibold text-slate-500 mb-1">Place / City Tag (Beside Maps Link)</label>
+                                <input type="text" id="newMemLocationTag" placeholder="e.g. Kochi, Bengaluru, Trivandrum" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
                             <div id="newMemAddressWrapper">
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Google Maps Link</label>
-                                <input type="text" id="newMemAddress" placeholder="https://maps.google.com/..." class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <input type="text" id="newMemAddress" placeholder="https://maps.google.com/..." class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Access Role</label>
-                                <select id="newMemRole" required class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <select id="newMemRole" required class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                                     <option value="member">Member</option>
                                     <option value="admin">Admin</option>
                                     <option value="banned">Banned</option>
                                 </select>
                             </div>
-                            <div>
+                            <div class="sm:col-span-2">
                                 <label class="block text-xs font-semibold text-slate-500 mb-1">Avatar Path (Optional)</label>
-                                <input type="text" id="newMemAvatar" placeholder="mb-avatar/rahul.jpg" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                                <input type="text" id="newMemAvatar" placeholder="mb-avatar/rahul.jpg" class="w-full p-2.5 bg-white border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                             </div>
-                            <button type="submit" class="sm:col-span-2 py-3 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
+                            <button type="submit" class="sm:col-span-2 lg:col-span-3 py-3 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.99] text-white font-bold rounded-xl shadow transition">
                                 <i class="fa-solid fa-plus mr-1"></i> Add Member & Save Login
                             </button>
                         </form>
@@ -402,7 +486,7 @@
                                 <i class="fa-solid fa-users-gear text-pastel-600"></i> Registered Users & Roles
                             </h3>
                             <div class="flex items-center gap-2">
-                                <button type="button" onclick="fetchLatestFromGoogleSheet(true)" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
+                                <button type="button" onclick="fetchLatestFromGoogleSheet(true)" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-sand-100 hover:bg-sand-200 text-slate-700 border border-sand-200 transition">
                                     <i class="fa-solid fa-rotate mr-1"></i> Refresh Sheet
                                 </button>
                                 <span id="cloudSyncBadge" class="self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-pastel-50 text-pastel-700 border border-pastel-200">
@@ -410,10 +494,10 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <div class="overflow-x-auto rounded-2xl border border-sand-200">
                             <table class="w-full text-left border-collapse min-w-[600px]">
                                 <thead>
-                                    <tr class="border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-50">
+                                    <tr class="border-b border-sand-200 text-xs font-bold text-slate-500 uppercase tracking-wider bg-sand-50">
                                         <th class="p-3">User Name</th>
                                         <th class="p-3">Designation / Family</th>
                                         <th class="p-3">Password</th>
@@ -421,7 +505,7 @@
                                         <th class="p-3 text-right">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="adminRoleTable" class="divide-y divide-slate-100 text-sm"></tbody>
+                                <tbody id="adminRoleTable" class="divide-y divide-sand-100 text-sm"></tbody>
                             </table>
                         </div>
                     </div>
@@ -431,14 +515,49 @@
         </main>
     </div>
 
+    <!-- FULL SCREEN PHOTO LIGHTBOX VIEWER WITH PREV / NEXT & DOWNLOAD -->
+    <div id="photoLightboxModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col justify-between items-center p-4 sm:p-6 anim-card-enter">
+        <!-- Lightbox Header / Counter & Close -->
+        <div class="w-full flex items-center justify-between gap-3 text-white max-w-5xl">
+            <div class="min-w-0">
+                <h4 id="lightboxTitle" class="text-base sm:text-lg font-bold font-display truncate">Photo Preview</h4>
+                <p id="lightboxCounter" class="text-xs text-slate-300">1 / 1</p>
+            </div>
+            <button type="button" onclick="closePhotoLightbox()" class="p-2 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition flex-shrink-0">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Lightbox Main Image Container (Preserves Native Aspect Ratio) -->
+        <div class="flex-1 w-full max-w-5xl flex items-center justify-center py-4 overflow-hidden relative">
+            <img id="lightboxImg" src="" alt="Full Preview" class="max-h-[72vh] max-w-full object-contain rounded-2xl shadow-2xl border border-white/10 transition-transform duration-300">
+        </div>
+
+        <!-- Lightbox Footer with Prev, Download, Next & Back Buttons -->
+        <div class="w-full max-w-5xl flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 pb-2">
+            <button type="button" onclick="navigateLightbox(-1)" class="px-4 py-2.5 bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xs sm:text-sm font-semibold rounded-full border border-white/20 shadow-lg backdrop-blur-md transition flex items-center gap-1.5">
+                <i class="fa-solid fa-chevron-left"></i> Prev
+            </button>
+            <button type="button" onclick="downloadLightboxPhoto()" class="px-4 py-2.5 bg-pastel-600/90 hover:bg-pastel-500 active:scale-95 text-white text-xs sm:text-sm font-semibold rounded-full border border-pastel-400/40 shadow-lg transition flex items-center gap-1.5">
+                <i class="fa-solid fa-download"></i> Download
+            </button>
+            <button type="button" onclick="navigateLightbox(1)" class="px-4 py-2.5 bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xs sm:text-sm font-semibold rounded-full border border-white/20 shadow-lg backdrop-blur-md transition flex items-center gap-1.5">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <button type="button" onclick="closePhotoLightbox()" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs sm:text-sm font-semibold rounded-full border border-white/15 shadow-lg backdrop-blur-md transition flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Gallery
+            </button>
+        </div>
+    </div>
+
     <!-- EDIT ALL MEMBER DETAILS MODAL -->
     <div id="editMemberModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 sm:p-6 space-y-4 anim-card-enter max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h3 class="text-lg font-bold font-display text-slate-800 flex items-center gap-2">
+        <div class="bg-white rounded-3xl shadow-2xl border border-sand-200 max-w-lg w-full p-5 sm:p-6 space-y-4 anim-card-enter max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-sand-100 pb-3">
+                <h3 class="text-lg font-bold font-display text-pastel-900 flex items-center gap-2">
                     <i class="fa-solid fa-user-pen text-pastel-600"></i> Edit Member Details
                 </h3>
-                <button type="button" onclick="closeEditMemberModal()" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                <button type="button" onclick="closeEditMemberModal()" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-sand-100 rounded-lg transition">
                     <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
@@ -448,12 +567,12 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Member Name</label>
-                    <input type="text" id="editMemName" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                    <input type="text" id="editMemName" required class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Member Tag</label>
-                    <select id="editMemTag" onchange="toggleEditMemberTagFields()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
+                    <select id="editMemTag" onchange="toggleEditMemberTagFields()" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
                         <option value="adult">Adult</option>
                         <option value="baby">Baby</option>
                         <option value="child">Child</option>
@@ -461,13 +580,33 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Blood Group</label>
+                    <select id="editMemBlood" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400 font-medium text-slate-700">
+                        <option value="">Not Specified</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Login Password</label>
-                    <input type="text" id="editMemPass" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                    <input type="text" id="editMemPass" required class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Household / Family Base</label>
-                    <select id="editMemHead" onchange="toggleCustomFamilyInput('edit')" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400"></select>
+                    <select id="editMemHead" onchange="toggleCustomFamilyInput('edit')" required class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400"></select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Birthday / Anniversary</label>
+                    <input type="text" id="editMemCelebration" placeholder="e.g. B'day: Dec 12" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                 </div>
 
                 <div id="editCustomFamilyWrapper" class="hidden sm:col-span-2">
@@ -477,17 +616,22 @@
 
                 <div id="editMemPhoneWrapper">
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Phone Number</label>
-                    <input type="text" id="editMemPhone" placeholder="+91 9876543210" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                    <input type="text" id="editMemPhone" placeholder="+91 9876543210" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                 </div>
 
-                <div id="editMemAddressWrapper">
+                <div id="editMemLocationTagWrapper">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Place / City Tag</label>
+                    <input type="text" id="editMemLocationTag" placeholder="e.g. Kochi, Bengaluru" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                </div>
+
+                <div id="editMemAddressWrapper" class="sm:col-span-2">
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Google Maps Link</label>
-                    <input type="text" id="editMemAddress" placeholder="https://maps.google.com/..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                    <input type="text" id="editMemAddress" placeholder="https://maps.google.com/..." class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Access Role</label>
-                    <select id="editMemRole" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                    <select id="editMemRole" required class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                         <option value="member">Member</option>
                         <option value="admin">Admin</option>
                         <option value="banned">Banned</option>
@@ -496,11 +640,11 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Avatar Path / URL</label>
-                    <input type="text" id="editMemAvatar" placeholder="mb-avatar/member.jpg" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
+                    <input type="text" id="editMemAvatar" placeholder="mb-avatar/member.jpg" class="w-full p-2.5 bg-sand-50 border border-sand-200 rounded-xl outline-none focus:ring-2 focus:ring-pastel-400">
                 </div>
 
-                <div class="sm:col-span-2 flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-                    <button type="button" onclick="closeEditMemberModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition">
+                <div class="sm:col-span-2 flex items-center justify-end gap-2 pt-2 border-t border-sand-100">
+                    <button type="button" onclick="closeEditMemberModal()" class="px-4 py-2.5 bg-sand-100 hover:bg-sand-200 text-slate-700 font-semibold rounded-xl transition">
                         Cancel
                     </button>
                     <button type="submit" class="px-5 py-2.5 bg-pastel-600 hover:bg-pastel-700 active:scale-[0.98] text-white font-bold rounded-xl shadow transition">
@@ -512,15 +656,15 @@
     </div>
 
     <!-- BROADCAST / NOTIFICATION TOAST -->
-    <div id="toastBanner" class="hidden fixed bottom-20 md:bottom-5 right-4 left-4 md:left-auto z-50 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 text-sm anim-card-enter">
+    <div id="toastBanner" class="hidden fixed bottom-20 md:bottom-5 right-4 left-4 md:left-auto z-50 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-3 text-sm anim-card-enter">
         <i class="fa-solid fa-bell text-amber-400"></i>
         <span id="toastMessage"></span>
     </div>
 
     <!-- CORE APPLICATION LOGIC WITH GOOGLE SHEET (APPS SCRIPT) TWO-WAY SYNC -->
     <script>
-        // PASTE YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL BELOW:
-        const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw-w-A-99fX3WtOa3I_OFNLwhlLH-J6VOhnn9HIkgs_Z5r9AxmDjed62OsnWLUc3kSJ/exec";
+        // PASTE YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL ONLY IN THIS ONE PLACE BELOW:
+        const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw-w-A-99fX3Wt0a3...";
 
         // 1. EMBEDDED USER DATABASE
         const familyUsersDB = [
@@ -532,13 +676,13 @@
             { "name": "Ajitha", "roleDesc": "Sasidharan's Family", "role": "member", "pass": "7777" }
         ];
 
-        // 2. DIRECTORY MEMBERS DATA
+        // 2. DIRECTORY MEMBERS DATA (Includes Blood Group, Location Tag & Birthday/Anniversary)
         let familyMembers = [
-            { id: 1, name: "Sumesh", memberTag: "adult", headOfFamily: "Sumesh's Family", phone: "+919876543210", address: "https://www.google.com/maps", avatar: "mb-avatar/sumesh.jpg" },
-            { id: 2, name: "Lovely", memberTag: "adult", headOfFamily: "Sumesh's Family", phone: "+919876543211", address: "https://www.google.com/maps", avatar: "mb-avatar/lovely.jpg" },
-            { id: 3, name: "Kaashi", memberTag: "adult", headOfFamily: "Sumesh's Family", phone: "+919876543212", address: "https://www.google.com/maps", avatar: "mb-avatar/kaashi.jpg" },
-            { id: 4, name: "Sasidharan", memberTag: "adult", headOfFamily: "Sasidharan's Family", phone: "+919876543213", address: "https://www.google.com/maps", avatar: "mb-avatar/sasidharan.jpg" },
-            { id: 5, name: "Ajitha", memberTag: "adult", headOfFamily: "Sasidharan's Family", phone: "+919876543214", address: "https://www.google.com/maps", avatar: "mb-avatar/ajitha.jpg" }
+            { id: 1, name: "Sumesh", memberTag: "adult", bloodGroup: "O+", celebration: "B'day: Dec 14", headOfFamily: "Sumesh's Family", phone: "+919876543210", locationTag: "Kochi", address: "https://www.google.com/maps", avatar: "mb-avatar/sumesh.jpg" },
+            { id: 2, name: "Lovely", memberTag: "adult", bloodGroup: "A+", celebration: "Anniv: May 18", headOfFamily: "Sumesh's Family", phone: "+919876543211", locationTag: "Kochi", address: "https://www.google.com/maps", avatar: "mb-avatar/lovely.jpg" },
+            { id: 3, name: "Kaashi", memberTag: "adult", bloodGroup: "O+", celebration: "B'day: Aug 22", headOfFamily: "Sumesh's Family", phone: "+919876543212", locationTag: "Bengaluru", address: "https://www.google.com/maps", avatar: "mb-avatar/kaashi.jpg" },
+            { id: 4, name: "Sasidharan", memberTag: "adult", bloodGroup: "B+", celebration: "B'day: Jan 09", headOfFamily: "Sasidharan's Family", phone: "+919876543213", locationTag: "Trivandrum", address: "https://www.google.com/maps", avatar: "mb-avatar/sasidharan.jpg" },
+            { id: 5, name: "Ajitha", memberTag: "adult", bloodGroup: "AB+", celebration: "Anniv: Nov 28", headOfFamily: "Sasidharan's Family", phone: "+919876543214", locationTag: "Trivandrum", address: "https://www.google.com/maps", avatar: "mb-avatar/ajitha.jpg" }
         ];
 
         let customFamilies = ["Sumesh's Family", "Sasidharan's Family"];
@@ -548,21 +692,33 @@
             { id: 1, title: "Annual Family Reunion", venue: "Grand Hotel Resort", agenda: "Get-together and dinner for all family members.", date: "Dec 25, 2026" }
         ];
 
-        // 4. GALLERY DATA
+        // 4. FAMILY MILESTONES / ACHIEVEMENTS DATA
+        let familyMilestones = [
+            { id: 1, memberName: "Kaashi", category: "Special Achievement", headline: "Academic Honors & Project Showcase", note: "Completed major milestone with great pride for the whole family.", date: "Nov 2026" },
+            { id: 2, memberName: "Sumesh & Lovely", category: "New Home", headline: "Warm Family Gathering at Home", note: "Cherished evening with relatives and loved ones.", date: "Oct 2026" }
+        ];
+
+        // 5. GALLERY DATA
         let galleryFolders = ["Summer Gathering", "Holiday Celebration"];
         let galleryPhotos = [
-            { id: 1, folder: "Summer Gathering", title: "Summer Gathering #1", url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=600&q=80" },
-            { id: 2, folder: "Holiday Celebration", title: "Holiday Celebration #1", url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=600&q=80" }
+            { id: 1, folder: "Summer Gathering", title: "Summer Gathering #1", url: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80" },
+            { id: 2, folder: "Holiday Celebration", title: "Holiday Celebration #1", url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=900&q=80" }
         ];
 
         let currentUser = null;
         let toastTimeout = null;
         let selectedFamilyFilter = "ALL";
         let isApplyingSheetSnapshot = false;
+        let lightboxQueue = [];
+        let lightboxIndex = 0;
 
         function hasValidSheetUrl() {
-            return typeof GOOGLE_SHEET_WEBAPP_URL === "string"
-                && GOOGLE_SHEET_WEBAPP_URL.trim().startsWith("https://script.google.com/");
+            if (typeof GOOGLE_SHEET_WEBAPP_URL !== "string") return false;
+            const trimmed = GOOGLE_SHEET_WEBAPP_URL.trim();
+            if (!trimmed || trimmed.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+                return false;
+            }
+            return trimmed.startsWith("https://script.google.com/macros/s/");
         }
 
         function setSheetBadge(mode, label) {
@@ -586,6 +742,7 @@
                 familyMembers,
                 customFamilies,
                 familyEvents,
+                familyMilestones,
                 galleryFolders,
                 galleryPhotos,
                 updatedAt: Date.now()
@@ -620,8 +777,9 @@
                 return;
             }
             try {
-                const sep = GOOGLE_SHEET_WEBAPP_URL.includes("?") ? "&" : "?";
-                const res = await fetch(`${GOOGLE_SHEET_WEBAPP_URL.trim()}${sep}_t=${Date.now()}`, {
+                const cleanUrl = GOOGLE_SHEET_WEBAPP_URL.trim();
+                const sep = cleanUrl.includes("?") ? "&" : "?";
+                const res = await fetch(`${cleanUrl}${sep}_t=${Date.now()}`, {
                     method: "GET",
                     cache: "no-store"
                 });
@@ -665,11 +823,15 @@
                 if (Array.isArray(parsed.familyMembers)) {
                     familyMembers = parsed.familyMembers.map(m => ({
                         ...m,
-                        memberTag: m.memberTag || (m.isChild ? 'child' : 'adult')
+                        memberTag: m.memberTag || (m.isChild ? 'child' : 'adult'),
+                        bloodGroup: m.bloodGroup || '',
+                        locationTag: m.locationTag || '',
+                        celebration: m.celebration || ''
                     }));
                 }
                 if (Array.isArray(parsed.customFamilies)) customFamilies = parsed.customFamilies;
                 if (Array.isArray(parsed.familyEvents)) familyEvents = parsed.familyEvents;
+                if (Array.isArray(parsed.familyMilestones)) familyMilestones = parsed.familyMilestones;
                 if (Array.isArray(parsed.galleryFolders)) galleryFolders = parsed.galleryFolders;
                 if (Array.isArray(parsed.galleryPhotos)) galleryPhotos = parsed.galleryPhotos;
 
@@ -689,8 +851,10 @@
                         if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
                     }
                     populateFamilyHeadSelect();
+                    renderCelebrations();
                     renderDirectory();
                     renderEvents();
+                    renderMilestones();
                     populateFolderSelect();
                     renderGallery();
                     renderAdminTable();
@@ -747,6 +911,79 @@
                 statusEl.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
             }
             statusEl.innerText = message;
+        }
+
+        // LIGHTBOX WITH PREV / NEXT & DOWNLOAD
+        function updateLightboxView() {
+            const modal = document.getElementById('photoLightboxModal');
+            const img = document.getElementById('lightboxImg');
+            const titleEl = document.getElementById('lightboxTitle');
+            const counterEl = document.getElementById('lightboxCounter');
+            if (!modal || !img || !lightboxQueue.length) return;
+
+            const safeIdx = ((lightboxIndex % lightboxQueue.length) + lightboxQueue.length) % lightboxQueue.length;
+            lightboxIndex = safeIdx;
+            const currentItem = lightboxQueue[lightboxIndex];
+
+            img.src = currentItem.url;
+            if (titleEl) titleEl.innerText = currentItem.title || 'Photo Preview';
+            if (counterEl) counterEl.innerText = `${currentItem.folder || 'Gallery'} • ${lightboxIndex + 1} of ${lightboxQueue.length}`;
+        }
+
+        function openPhotoLightbox(url, title, folderName = '') {
+            const modal = document.getElementById('photoLightboxModal');
+            if (!modal) return;
+
+            const folderPhotos = folderName
+                ? galleryPhotos.filter(p => (p.folder || 'General') === folderName)
+                : galleryPhotos;
+
+            lightboxQueue = folderPhotos.length > 0 ? folderPhotos : [{ url, title, folder: folderName }];
+            const foundIdx = lightboxQueue.findIndex(p => p.url === url && p.title === title);
+            lightboxIndex = foundIdx >= 0 ? foundIdx : 0;
+
+            updateLightboxView();
+            modal.classList.remove('hidden');
+        }
+
+        function navigateLightbox(delta) {
+            if (!lightboxQueue.length) return;
+            lightboxIndex += delta;
+            updateLightboxView();
+        }
+
+        async function downloadLightboxPhoto() {
+            if (!lightboxQueue.length) return;
+            const item = lightboxQueue[lightboxIndex];
+            const cleanFileName = `${(item.title || 'family-photo').replace(/[^a-z0-9-_]+/gi, '_')}.jpg`;
+            try {
+                const resp = await fetch(item.url);
+                const blob = await resp.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = cleanFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+                showToast(`Downloading "${item.title}"...`);
+            } catch (err) {
+                const link = document.createElement('a');
+                link.href = item.url;
+                link.download = cleanFileName;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast("Opening photo for download...");
+            }
+        }
+
+        function closePhotoLightbox() {
+            const modal = document.getElementById('photoLightboxModal');
+            if (modal) modal.classList.add('hidden');
         }
 
         function handleLoginSubmit(event) {
@@ -899,6 +1136,8 @@
             const tagEl = document.getElementById('newMemTag');
             const phoneInput = document.getElementById('newMemPhone');
             const phoneWrapper = document.getElementById('newMemPhoneWrapper');
+            const locTagWrapper = document.getElementById('newMemLocationTagWrapper');
+            const locTagInput = document.getElementById('newMemLocationTag');
             const addressWrapper = document.getElementById('newMemAddressWrapper');
             const addressInput = document.getElementById('newMemAddress');
 
@@ -909,21 +1148,20 @@
                 phoneInput.required = !hideContact;
                 if (hideContact) phoneInput.value = '';
             }
-            if (addressInput && hideContact) {
-                addressInput.value = '';
-            }
-            if (phoneWrapper) {
-                phoneWrapper.classList.toggle('hidden', hideContact);
-            }
-            if (addressWrapper) {
-                addressWrapper.classList.toggle('hidden', hideContact);
-            }
+            if (locTagInput && hideContact) locTagInput.value = '';
+            if (addressInput && hideContact) addressInput.value = '';
+
+            if (phoneWrapper) phoneWrapper.classList.toggle('hidden', hideContact);
+            if (locTagWrapper) locTagWrapper.classList.toggle('hidden', hideContact);
+            if (addressWrapper) addressWrapper.classList.toggle('hidden', hideContact);
         }
 
         function toggleEditMemberTagFields() {
             const tagEl = document.getElementById('editMemTag');
             const phoneInput = document.getElementById('editMemPhone');
             const phoneWrapper = document.getElementById('editMemPhoneWrapper');
+            const locTagWrapper = document.getElementById('editMemLocationTagWrapper');
+            const locTagInput = document.getElementById('editMemLocationTag');
             const addressWrapper = document.getElementById('editMemAddressWrapper');
             const addressInput = document.getElementById('editMemAddress');
 
@@ -934,15 +1172,12 @@
                 phoneInput.required = !hideContact;
                 if (hideContact) phoneInput.value = '';
             }
-            if (addressInput && hideContact) {
-                addressInput.value = '';
-            }
-            if (phoneWrapper) {
-                phoneWrapper.classList.toggle('hidden', hideContact);
-            }
-            if (addressWrapper) {
-                addressWrapper.classList.toggle('hidden', hideContact);
-            }
+            if (locTagInput && hideContact) locTagInput.value = '';
+            if (addressInput && hideContact) addressInput.value = '';
+
+            if (phoneWrapper) phoneWrapper.classList.toggle('hidden', hideContact);
+            if (locTagWrapper) locTagWrapper.classList.toggle('hidden', hideContact);
+            if (addressWrapper) addressWrapper.classList.toggle('hidden', hideContact);
         }
 
         function openEditMemberModal(userName) {
@@ -983,8 +1218,11 @@
                 document.getElementById('editOriginalUserName').value = userObj ? userObj.name : (memberObj ? memberObj.name : userName);
                 document.getElementById('editMemName').value = userObj ? userObj.name : (memberObj ? memberObj.name : userName);
                 document.getElementById('editMemTag').value = inferredTag;
+                document.getElementById('editMemBlood').value = memberObj?.bloodGroup || '';
                 document.getElementById('editMemPass').value = userObj ? userObj.pass : '7777';
+                document.getElementById('editMemCelebration').value = memberObj?.celebration || '';
                 document.getElementById('editMemPhone').value = memberObj?.phone || '';
+                document.getElementById('editMemLocationTag').value = memberObj?.locationTag || '';
                 document.getElementById('editMemAddress').value = memberObj?.address || '';
                 document.getElementById('editMemRole').value = userObj?.role || 'member';
                 document.getElementById('editMemAvatar').value = memberObj?.avatar || `mb-avatar/${(userObj?.name || userName).toLowerCase()}.jpg`;
@@ -1018,10 +1256,13 @@
                 const updatedName = document.getElementById('editMemName').value.trim();
                 const memberTag = document.getElementById('editMemTag').value || 'adult';
                 const hideContact = memberTag === 'baby' || memberTag === 'child';
+                const bloodGroup = document.getElementById('editMemBlood').value.trim();
                 const updatedPass = document.getElementById('editMemPass').value.trim() || '7777';
+                const celebration = document.getElementById('editMemCelebration').value.trim();
                 const selectedHead = document.getElementById('editMemHead').value;
                 const customHead = document.getElementById('editCustomFamilyHead')?.value.trim() || '';
                 const updatedPhone = hideContact ? '' : document.getElementById('editMemPhone').value.trim();
+                const locationTag = hideContact ? '' : document.getElementById('editMemLocationTag').value.trim();
                 const updatedAddress = hideContact ? '' : (document.getElementById('editMemAddress').value.trim() || 'https://www.google.com/maps');
                 const updatedRole = document.getElementById('editMemRole').value;
                 const updatedAvatar = document.getElementById('editMemAvatar').value.trim() || `mb-avatar/${updatedName.toLowerCase()}.jpg`;
@@ -1060,8 +1301,11 @@
                     memberObj.name = updatedName;
                     memberObj.memberTag = memberTag;
                     memberObj.isChild = hideContact;
+                    memberObj.bloodGroup = bloodGroup;
+                    memberObj.celebration = celebration;
                     memberObj.headOfFamily = finalFamilyGroup;
                     memberObj.phone = updatedPhone;
+                    memberObj.locationTag = locationTag;
                     memberObj.address = updatedAddress;
                     memberObj.avatar = updatedAvatar;
                 } else {
@@ -1070,8 +1314,11 @@
                         name: updatedName,
                         memberTag: memberTag,
                         isChild: hideContact,
+                        bloodGroup: bloodGroup,
+                        celebration: celebration,
                         headOfFamily: finalFamilyGroup,
                         phone: updatedPhone,
+                        locationTag: locationTag,
                         address: updatedAddress,
                         avatar: updatedAvatar
                     });
@@ -1091,6 +1338,7 @@
                 closeEditMemberModal();
                 populateFamilyHeadSelect(finalFamilyGroup);
                 populateEditAvatarDropdown();
+                renderCelebrations();
                 renderDirectory();
                 renderAdminTable();
                 syncHubState();
@@ -1167,10 +1415,13 @@
                 const name = document.getElementById('newMemName').value.trim();
                 const memberTag = document.getElementById('newMemTag') ? document.getElementById('newMemTag').value : 'adult';
                 const hideContact = memberTag === 'baby' || memberTag === 'child';
+                const bloodGroup = document.getElementById('newMemBlood')?.value.trim() || '';
                 const manualPass = document.getElementById('newMemPass').value.trim() || '7777';
+                const celebration = document.getElementById('newMemCelebration')?.value.trim() || '';
                 const selectedHead = document.getElementById('newMemHead').value;
                 const customHead = document.getElementById('newCustomFamilyHead') ? document.getElementById('newCustomFamilyHead').value.trim() : '';
                 const phone = hideContact ? '' : document.getElementById('newMemPhone').value.trim();
+                const locationTag = hideContact ? '' : (document.getElementById('newMemLocationTag')?.value.trim() || '');
                 const address = hideContact ? '' : (document.getElementById('newMemAddress').value.trim() || 'https://www.google.com/maps');
                 const role = document.getElementById('newMemRole').value;
                 const avatar = document.getElementById('newMemAvatar').value.trim() || `mb-avatar/${name.toLowerCase()}.jpg`;
@@ -1187,8 +1438,11 @@
                     id: Date.now() + Math.floor(Math.random() * 1000),
                     name: name,
                     memberTag: memberTag,
+                    bloodGroup: bloodGroup,
+                    celebration: celebration,
                     headOfFamily: finalFamilyGroup,
                     phone: phone,
+                    locationTag: locationTag,
                     address: address,
                     avatar: avatar
                 });
@@ -1221,6 +1475,7 @@
                 toggleCustomFamilyInput('new');
                 toggleMemberTagFields();
 
+                renderCelebrations();
                 renderDirectory();
                 renderAdminTable();
                 populateEditAvatarDropdown();
@@ -1255,6 +1510,7 @@
 
                 showToast(`Member "${userName}" deleted!`);
                 populateFamilyHeadSelect();
+                renderCelebrations();
                 renderDirectory();
                 renderAdminTable();
                 populateEditAvatarDropdown();
@@ -1285,7 +1541,7 @@
 
             const allBtnClass = selectedFamilyFilter === "ALL"
                 ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition active:scale-95"
-                : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition active:scale-95";
+                : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-sand-100 hover:bg-sand-200 text-slate-700 transition active:scale-95";
 
             let html = `<button type="button" onclick="selectFamilyFilter('ALL')" class="${allBtnClass}">All</button>`;
 
@@ -1293,7 +1549,7 @@
                 const isActive = selectedFamilyFilter === fam;
                 const cls = isActive
                     ? "px-3.5 py-1.5 rounded-xl text-xs font-bold bg-pastel-600 text-white shadow-sm transition active:scale-95"
-                    : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition active:scale-95";
+                    : "px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-sand-100 hover:bg-sand-200 text-slate-700 transition active:scale-95";
                 const safeFam = fam.replace(/'/g, "\\'");
                 return `<button type="button" onclick="selectFamilyFilter('${safeFam}')" class="${cls}">${fam}</button>`;
             }).join('');
@@ -1355,8 +1611,103 @@
             syncHubState();
         }
 
+        // FAMILY MILESTONES / ACHIEVEMENT WALL HANDLERS
+        function handleAddMilestone(e) {
+            try {
+                e.preventDefault();
+                const memberName = document.getElementById('msMemberName').value.trim();
+                const category = document.getElementById('msCategory').value.trim();
+                const headline = document.getElementById('msHeadline').value.trim();
+                const date = document.getElementById('msDate').value.trim() || 'Recent';
+                const note = document.getElementById('msNote').value.trim();
+
+                if (!memberName || !headline || !note) return false;
+
+                familyMilestones.unshift({
+                    id: Date.now(),
+                    memberName,
+                    category,
+                    headline,
+                    date,
+                    note
+                });
+
+                showToast("Milestone shared with the family!");
+                e.target.reset();
+                renderMilestones();
+                syncHubState();
+                return false;
+            } catch (err) {
+                console.error("Add milestone error:", err);
+                return false;
+            }
+        }
+
+        function handleDeleteMilestone(milestoneId) {
+            if (!currentUser || currentUser.role !== 'admin') return;
+            familyMilestones = familyMilestones.filter(ms => ms.id !== milestoneId);
+            showToast("Milestone removed!");
+            renderMilestones();
+            syncHubState();
+        }
+
+        function renderMilestones() {
+            const feed = document.getElementById('milestonesFeed');
+            if (!feed) return;
+            const isAdmin = currentUser && currentUser.role === 'admin';
+
+            if (!familyMilestones.length) {
+                feed.innerHTML = `<p class="text-sm text-slate-400 italic col-span-full bg-white p-6 rounded-3xl border border-sand-200">No family milestones posted yet.</p>`;
+                return;
+            }
+
+            feed.innerHTML = familyMilestones.map(ms => `
+                <div class="bg-white p-5 rounded-3xl border border-sand-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex flex-col justify-between space-y-3">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pastel-100 text-pastel-800 border border-pastel-200">
+                                ${ms.category || 'Milestone'}
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs text-slate-400 font-medium">${ms.date || ''}</span>
+                                ${isAdmin ? `
+                                    <button type="button" onclick="handleDeleteMilestone(${ms.id})" title="Delete Milestone" class="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <h4 class="text-base font-bold font-display text-slate-800">${ms.headline}</h4>
+                        <p class="text-xs font-semibold text-pastel-700"><i class="fa-solid fa-user-check mr-1"></i> ${ms.memberName}</p>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">${ms.note}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCelebrations() {
+            const listEl = document.getElementById('celebrationsList');
+            if (!listEl) return;
+
+            const items = familyMembers.filter(m => m.celebration && m.celebration.trim() !== '');
+            if (!items.length) {
+                listEl.innerHTML = `<p class="text-xs text-slate-500 italic col-span-full">No birthdays or anniversaries added yet.</p>`;
+                return;
+            }
+
+            listEl.innerHTML = items.map(m => `
+                <div class="bg-white/90 px-3.5 py-2.5 rounded-2xl border border-pastel-200/80 flex items-center justify-between gap-2 shadow-2xs">
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-slate-800 truncate">${m.name}</div>
+                        <div class="text-[11px] font-semibold text-pastel-700 truncate">${m.celebration}</div>
+                    </div>
+                    <i class="fa-solid fa-gift text-amber-500 text-sm flex-shrink-0"></i>
+                </div>
+            `).join('');
+        }
+
         function switchTab(tabId) {
-            ['directory', 'events', 'gallery', 'admin'].forEach(tab => {
+            ['directory', 'events', 'milestones', 'gallery', 'admin'].forEach(tab => {
                 const section = document.getElementById(`section-${tab}`);
                 const btn = document.getElementById(`tab-${tab}`);
                 const mobBtn = document.getElementById(`mob-tab-${tab}`);
@@ -1395,8 +1746,10 @@
 
         function initApp() {
             populateFamilyHeadSelect();
+            renderCelebrations();
             renderDirectory();
             renderEvents();
+            renderMilestones();
             populateFolderSelect();
             renderGallery();
             renderAdminTable();
@@ -1441,7 +1794,7 @@
                 const groupEl = document.createElement('div');
                 groupEl.className = "space-y-4 anim-card-enter";
                 groupEl.innerHTML = `
-                    <h3 class="text-lg font-bold font-display text-pastel-800 border-b border-slate-200 pb-2 flex items-center justify-between">
+                    <h3 class="text-lg font-bold font-display text-pastel-800 border-b border-sand-200 pb-2 flex items-center justify-between">
                         <span>${head}</span>
                         <span class="text-xs font-normal text-slate-400">${members.length} member(s)</span>
                     </h3>
@@ -1454,22 +1807,35 @@
                                 const tagValue = m.memberTag || (m.isChild ? 'child' : 'adult');
                                 const hideContact = tagValue === 'baby' || tagValue === 'child';
                                 const badgeHtml = getMemberTagBadgeHtml(tagValue);
+                                const bloodBadge = m.bloodGroup
+                                    ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><i class="fa-solid fa-droplet text-rose-500"></i> ${m.bloodGroup}</span>`
+                                    : '';
+                                const locTagBadge = m.locationTag
+                                    ? `<span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold rounded-full bg-pastel-100 text-pastel-800 border border-pastel-200">${m.locationTag}</span>`
+                                    : '';
                                 const staggerDelay = Math.min(idx * 35, 210);
                                 return `
-                                    <div style="animation-delay: ${staggerDelay}ms" class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex items-start justify-between gap-3">
-                                        <div class="flex items-start gap-3.5 min-w-0">
-                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-slate-200 relative">
+                                    <div style="animation-delay: ${staggerDelay}ms" class="bg-white rounded-2xl p-4 border border-sand-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex items-start justify-between gap-3">
+                                        <div class="flex items-start gap-3.5 min-w-0 w-full">
+                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-sand-200 relative">
                                                 <img src="${avatarSrc}" alt="${m.name}" class="w-full h-full object-cover aspect-square" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
                                                 <span class="hidden">${initial}</span>
                                             </div>
-                                            <div class="space-y-1 min-w-0">
-                                                <div class="flex items-center gap-2 flex-wrap">
+                                            <div class="space-y-1 min-w-0 flex-1">
+                                                <div class="flex items-center gap-1.5 flex-wrap">
                                                     <h4 class="font-bold text-slate-800 truncate">${m.name}</h4>
                                                     ${badgeHtml}
+                                                    ${bloodBadge}
                                                 </div>
+                                                ${m.celebration ? `<div class="text-[11px] text-amber-700 font-medium"><i class="fa-solid fa-cake-candles mr-1 text-amber-500"></i> ${m.celebration}</div>` : ''}
                                                 ${hideContact ? '' : `
                                                     ${m.phone ? `<a href="tel:${m.phone}" class="text-xs text-pastel-600 hover:underline block"><i class="fa-solid fa-phone mr-1"></i> ${m.phone}</a>` : ''}
-                                                    ${m.address ? `<a href="${m.address}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-pastel-600 block truncate"><i class="fa-solid fa-location-dot mr-1"></i> Open Google Maps</a>` : ''}
+                                                    ${m.address ? `
+                                                        <div class="flex items-center gap-2 flex-wrap pt-0.5">
+                                                            <a href="${m.address}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-pastel-600 truncate"><i class="fa-solid fa-location-dot mr-1"></i> Open Google Maps</a>
+                                                            ${locTagBadge}
+                                                        </div>
+                                                    ` : ''}
                                                 `}
                                             </div>
                                         </div>
@@ -1504,7 +1870,7 @@
                 const safeVenue = e.venue.replace(/'/g, "\\'");
                 const safeAgenda = e.agenda.replace(/'/g, "\\'");
                 return `
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter space-y-3 flex flex-col justify-between">
+                    <div class="bg-white p-6 rounded-3xl border border-sand-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter space-y-3 flex flex-col justify-between">
                         <div class="space-y-2">
                             <div class="flex justify-between items-start gap-2">
                                 <h3 class="text-xl font-bold font-display text-slate-800">${e.title}</h3>
@@ -1640,8 +2006,8 @@
             grid.innerHTML = Object.entries(grouped).map(([folderName, photos]) => {
                 const safeFolder = folderName.replace(/'/g, "\\'");
                 return `
-                <div class="space-y-3 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm anim-card-enter">
-                    <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div class="space-y-3 bg-white p-4 sm:p-5 rounded-3xl border border-sand-200 shadow-sm anim-card-enter">
+                    <div class="flex items-center justify-between gap-2 border-b border-sand-100 pb-3">
                         <div class="flex items-center gap-2 min-w-0">
                             <i class="fa-solid fa-folder-open text-pastel-600 text-lg sm:text-xl flex-shrink-0"></i>
                             <h3 class="text-base sm:text-lg font-bold font-display text-slate-800 truncate">${folderName}</h3>
@@ -1660,14 +2026,20 @@
                     ${photos.length === 0
                         ? `<p class="text-xs text-slate-400 italic py-2">Folder "${folderName}" created (0/20 photos).</p>`
                         : `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                            ${photos.map(p => `
-                                <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md hub-card-hover group">
-                                    <img src="${p.url}" alt="${p.title}" class="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition duration-300">
-                                    <div class="p-2.5 bg-white border-t border-slate-100">
+                            ${photos.map(p => {
+                                const safeUrl = p.url.replace(/'/g, "\\'");
+                                const safeTitle = p.title.replace(/'/g, "\\'");
+                                return `
+                                <div onclick="openPhotoLightbox('${safeUrl}', '${safeTitle}', '${safeFolder}')" class="bg-sand-50 rounded-2xl overflow-hidden border border-sand-200 shadow-sm hover:shadow-md hub-card-hover group cursor-pointer relative">
+                                    <div class="w-full h-40 sm:h-52 bg-slate-100 flex items-center justify-center overflow-hidden">
+                                        <img src="${p.url}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                    </div>
+                                    <div class="p-2.5 bg-white border-t border-sand-100 flex items-center justify-between">
                                         <h4 class="font-bold text-xs sm:text-sm text-slate-800 truncate">${p.title}</h4>
+                                        <i class="fa-solid fa-expand text-slate-400 group-hover:text-pastel-600 text-xs transition"></i>
                                     </div>
                                 </div>
-                            `).join('')}
+                            `}).join('')}
                         </div>`
                     }
                 </div>
@@ -1683,12 +2055,12 @@
                 const safeName = u.name.replace(/'/g, "\\'");
                 const isSelf = currentUser && currentUser.name && currentUser.name.trim().toLowerCase() === u.name.trim().toLowerCase();
                 return `
-                <tr class="hover:bg-slate-50/70 transition">
+                <tr class="hover:bg-sand-50/70 transition">
                     <td class="p-3 font-semibold text-slate-800">${u.name}</td>
                     <td class="p-3 text-slate-500">${u.roleDesc}</td>
                     <td class="p-3 font-mono text-xs text-slate-600">${u.pass}</td>
                     <td class="p-3">
-                        <span class="px-2.5 py-1 text-xs font-bold rounded-full ${u.role === 'admin' ? 'bg-amber-100 text-amber-800' : u.role === 'banned' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'}">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-full ${u.role === 'admin' ? 'bg-amber-100 text-amber-800' : u.role === 'banned' ? 'bg-rose-100 text-rose-800' : 'bg-sand-100 text-slate-700'}">
                             ${u.role.toUpperCase()}
                         </span>
                     </td>
@@ -1699,7 +2071,7 @@
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
                             ` : ''}
-                            <select onchange="updateUserRole('${safeName}', this.value)" class="p-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none">
+                            <select onchange="updateUserRole('${safeName}', this.value)" class="p-1.5 text-xs bg-sand-50 border border-sand-200 rounded-lg outline-none">
                                 <option value="member" ${u.role === 'member' ? 'selected' : ''}>Member</option>
                                 <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
                                 <option value="banned" ${u.role === 'banned' ? 'selected' : ''}>Banned</option>
