@@ -12,23 +12,36 @@
             theme: {
                 extend: {
                     colors: {
+                        rolex: {
+                            50: '#eefaf4',
+                            100: '#d4f2e3',
+                            200: '#ace4c9',
+                            300: '#76cfa9',
+                            400: '#3eb384',
+                            500: '#1f9669',
+                            600: '#167854',
+                            700: '#145f44',
+                            800: '#1b4d38',
+                            900: '#103426',
+                            950: '#081d15'
+                        },
                         pastel: {
-                            50: '#f4f8f6',
-                            100: '#e3eee9',
-                            200: '#c6ded4',
-                            300: '#a0c6b7',
-                            400: '#75aa97',
-                            500: '#548f7d',
-                            600: '#407364',
-                            700: '#355d52',
-                            800: '#2c4b43',
-                            900: '#264039'
+                            50: '#eefaf4',
+                            100: '#d4f2e3',
+                            200: '#ace4c9',
+                            300: '#76cfa9',
+                            400: '#3eb384',
+                            500: '#1f9669',
+                            600: '#167854',
+                            700: '#145f44',
+                            800: '#1b4d38',
+                            900: '#103426'
                         },
                         sand: {
-                            50: '#fbf9f5',
-                            100: '#f6f2e9',
-                            200: '#eae2d2',
-                            300: '#dbcbb3'
+                            50: '#f5fbf8',
+                            100: '#e8f5ee',
+                            200: '#cfe7da',
+                            300: '#aed4c0'
                         }
                     },
                     fontFamily: {
@@ -48,7 +61,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Lightweight Custom CSS Animations -->
+    <!-- Lightweight Custom CSS Animations & Glassmorphism -->
     <style>
         .blurred-content {
             filter: blur(8px);
@@ -78,13 +91,28 @@
         .hub-card-hover:hover {
             transform: translateY(-2px);
         }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            box-shadow: 0 12px 30px -14px rgba(16, 52, 38, 0.16);
+        }
+
+        .rolex-glass-header {
+            background: linear-gradient(135deg, rgba(27, 77, 56, 0.94) 0%, rgba(16, 52, 38, 0.96) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(172, 228, 201, 0.25);
+        }
     </style>
 </head>
-<body class="bg-sand-50 font-sans text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
+<body style="background: radial-gradient(circle at 12% 12%, rgba(62, 179, 132, 0.16), transparent 45%), radial-gradient(circle at 88% 8%, rgba(27, 77, 56, 0.14), transparent 42%), linear-gradient(160deg, #f3fbf7 0%, #e6f4ed 50%, #f6fcf9 100%);" class="font-sans text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
 
     <!-- LOGIN MODAL / OVERLAY -->
     <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl shadow-2xl border border-sand-200 max-w-md w-full p-6 text-center anim-card-enter">
+        <div class="glass-panel rounded-3xl shadow-2xl max-w-md w-full p-6 text-center anim-card-enter">
             <div class="w-16 h-16 bg-pastel-100 text-pastel-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner overflow-hidden border border-pastel-200 relative">
                 <img id="loginLogoImg" src="mb-avatar/logo.png" alt="Family Hub Logo" class="w-full h-full object-cover" onerror="this.classList.add('hidden'); document.getElementById('loginLogoFallback').classList.remove('hidden');">
                 <i id="loginLogoFallback" class="fa-solid fa-user-lock hidden"></i>
@@ -123,7 +151,7 @@
     <!-- MAIN APP CONTAINER -->
     <div id="appContainer" class="blurred-content transition-all duration-500">
         <!-- HEADER / NAVIGATION -->
-        <header class="bg-pastel-700 text-white shadow-md sticky top-0 z-30">
+        <header class="rolex-glass-header text-white shadow-md sticky top-0 z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
                 <!-- Brand Title & Logo -->
                 <div class="flex items-center space-x-3">
@@ -199,26 +227,40 @@
         <!-- CONTENT CONTAINERS -->
         <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
 
-            <!-- 1. DIRECTORY SECTION -->
-            <section id="section-directory" class="space-y-4 sm:space-y-6 anim-card-enter">
-                <!-- Birthdays & Anniversaries Reminder Banner -->
-                <div class="bg-gradient-to-r from-pastel-50 via-white to-sand-100 p-4 sm:p-5 rounded-3xl shadow-sm border border-pastel-200">
-                    <div class="flex items-center justify-between gap-2 mb-3">
-                        <h3 class="text-sm sm:text-base font-bold font-display text-pastel-900 flex items-center gap-2">
-                            <span class="w-7 h-7 rounded-xl bg-pastel-100 text-pastel-700 flex items-center justify-center">
-                                <i class="fa-solid fa-cake-candles text-xs"></i>
-                            </span>
-                            Birthdays & Anniversaries Reminders
-                        </h3>
-                        <span class="text-[11px] font-semibold text-pastel-700 bg-pastel-100 px-2.5 py-0.5 rounded-full">Celebrations</span>
+            <!-- FULL LIVE CLOCK & CLOSEST UPCOMING BIRTHDAY COUNTDOWN -->
+            <div class="rolex-glass-header rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-rolex-200/25 mb-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 anim-card-enter">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-11 h-11 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-rolex-200 flex-shrink-0">
+                        <i class="fa-solid fa-clock text-lg"></i>
                     </div>
-                    <div id="celebrationsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
+                    <div class="min-w-0">
+                        <div class="text-[10px] uppercase tracking-widest text-rolex-200 font-bold">Live Date & Time</div>
+                        <div id="liveClockText" class="text-xs sm:text-sm font-extrabold font-mono text-white tracking-wide truncate mt-0.5">
+                            Loading Full Date & Time...
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
+                <div class="bg-white/10 border border-white/15 rounded-2xl px-4 py-2.5 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <i class="fa-solid fa-cake-candles text-amber-300 text-base flex-shrink-0"></i>
+                        <div class="min-w-0">
+                            <div class="text-[10px] uppercase tracking-wider text-rolex-200 font-bold">Upcoming Birthday Reminder</div>
+                            <div id="closestBirthdayName" class="text-xs sm:text-sm font-bold text-white truncate">Checking...</div>
+                        </div>
+                    </div>
+                    <span id="closestBirthdayDaysBadge" class="px-3 py-1 rounded-xl bg-amber-300 text-rolex-950 text-xs font-extrabold whitespace-nowrap shadow">
+                        -- days left
+                    </span>
+                </div>
+            </div>
+
+            <!-- 1. DIRECTORY SECTION -->
+            <section id="section-directory" class="space-y-4 sm:space-y-6 anim-card-enter">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 glass-panel p-4 sm:p-6 rounded-3xl shadow-sm">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Directory</h2>
-                        <p class="text-slate-500 text-xs sm:text-sm">Grouped by Household with Blood Group & Location Tags</p>
+                        <p class="text-slate-500 text-xs sm:text-sm">Contact details, phone numbers, locations & blood groups</p>
                     </div>
 
                     <div class="w-full sm:w-auto">
@@ -230,7 +272,7 @@
                 </div>
 
                 <!-- Sort / Filter By Family Bar -->
-                <div class="bg-white p-3 sm:px-5 sm:py-3.5 rounded-2xl shadow-sm border border-sand-200 flex flex-wrap items-center gap-2">
+                <div class="glass-panel p-3 sm:px-5 sm:py-3.5 rounded-2xl shadow-sm flex flex-wrap items-center gap-2">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1 flex items-center gap-1.5">
                         <i class="fa-solid fa-arrow-down-a-z text-pastel-600"></i> Sort / Family:
                     </span>
@@ -243,7 +285,7 @@
 
             <!-- 2. EVENTS SECTION -->
             <section id="section-events" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 glass-panel p-4 sm:p-6 rounded-3xl shadow-sm">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Functions & Notifications</h2>
                         <p class="text-slate-500 text-xs sm:text-sm">Upcoming events and broadcast alerts</p>
@@ -251,7 +293,7 @@
                 </div>
 
                 <!-- Admin Broadcast Event Form -->
-                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-3xl border border-amber-200 shadow-sm space-y-4">
+                <div class="admin-only hidden glass-panel p-4 sm:p-6 rounded-3xl border-amber-200 shadow-sm space-y-4">
                     <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
                         <i class="fa-solid fa-bullhorn text-amber-500"></i> Post New Function / Notification
                     </h3>
@@ -271,7 +313,7 @@
 
             <!-- 3. FAMILY MILESTONES / ACHIEVEMENT WALL SECTION -->
             <section id="section-milestones" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 glass-panel p-4 sm:p-6 rounded-3xl shadow-sm">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Milestone & Achievement Wall</h2>
                         <p class="text-slate-500 text-xs sm:text-sm">Celebrate new jobs, graduations, homes, travels, and happy moments</p>
@@ -279,7 +321,7 @@
                 </div>
 
                 <!-- Add Milestone Form (Available to Logged-in Family Members) -->
-                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-sand-200 shadow-sm space-y-4">
+                <div class="glass-panel p-4 sm:p-6 rounded-3xl shadow-sm space-y-4">
                     <h3 class="text-md sm:text-lg font-bold font-display text-slate-800 flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i> Share a Happy Moment or Achievement
                     </h3>
@@ -306,7 +348,7 @@
 
             <!-- 4. GALLERY SECTION -->
             <section id="section-gallery" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 glass-panel p-4 sm:p-6 rounded-3xl shadow-sm">
                     <div>
                         <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Family Photo Gallery</h2>
                         <p class="text-slate-500 text-xs sm:text-sm">Click any photo to view in full aspect ratio, browse next/prev, or download</p>
@@ -314,7 +356,7 @@
                 </div>
 
                 <!-- ADMIN GALLERY MANAGEMENT (CREATE FOLDER & UPLOAD PHOTO) -->
-                <div class="admin-only hidden bg-white p-4 sm:p-6 rounded-3xl border border-amber-200 shadow-sm space-y-6">
+                <div class="admin-only hidden glass-panel p-4 sm:p-6 rounded-3xl border-amber-200 shadow-sm space-y-6">
                     <!-- Create New Folder -->
                     <div class="space-y-3 border-b border-slate-100 pb-5">
                         <h3 class="text-md font-bold text-slate-800 flex items-center gap-2">
@@ -331,7 +373,7 @@
                     <!-- Upload Photo to Folder -->
                     <div class="space-y-3">
                         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up text-amber-500"></i> Upload Photo to Gallery (Max 20/Folder)
+                            <i class="fa-solid fa-cloud-arrow-up text-amber-500"></i> Upload Photo to Gallery
                         </h3>
                         <form onsubmit="return handleUploadPhoto(event);" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                             <div>
@@ -364,7 +406,7 @@
 
             <!-- 5. ADMIN SECTION -->
             <section id="section-admin" class="hidden space-y-4 sm:space-y-6 anim-card-enter">
-                <div class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-sand-200 space-y-6">
+                <div class="glass-panel p-4 sm:p-6 rounded-3xl shadow-sm space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
                             <h2 class="text-xl sm:text-2xl font-bold font-display text-pastel-900">Administrator Console</h2>
@@ -376,7 +418,7 @@
                     </div>
 
                     <!-- EDIT MEMBER AVATAR FORM -->
-                    <div class="bg-amber-50/60 p-4 sm:p-5 rounded-2xl border border-amber-200 space-y-4">
+                    <div class="bg-amber-50/70 p-4 sm:p-5 rounded-2xl border border-amber-200 space-y-4">
                         <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-image text-amber-600"></i> Edit Member Avatar
                         </h3>
@@ -398,7 +440,7 @@
                     </div>
 
                     <!-- ADD NEW MEMBER FORM -->
-                    <div class="bg-sand-50 p-4 sm:p-5 rounded-2xl border border-sand-200 space-y-4">
+                    <div class="bg-sand-50/80 p-4 sm:p-5 rounded-2xl border border-sand-200 space-y-4">
                         <h3 class="text-md font-bold font-display text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-user-plus text-pastel-600"></i> Add New Family Member & Login Credentials
                         </h3>
@@ -726,13 +768,109 @@
             if (!badge) return;
             if (mode === "live") {
                 badge.innerHTML = `<i class="fa-solid fa-table-cells mr-1"></i> ${label}`;
-                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
+                badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-rolex-50 text-rolex-800 border border-rolex-200";
             } else if (mode === "warn") {
                 badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ${label}`;
                 badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200";
             } else {
                 badge.innerHTML = `<i class="fa-solid fa-link mr-1"></i> ${label}`;
                 badge.className = "self-start sm:self-auto text-[11px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200";
+            }
+        }
+
+        // Full Live Clock (Day, Date, Month, Year, Hour, Minute, Second) in White
+        function updateFullLiveClock() {
+            const clockEl = document.getElementById("liveClockText");
+            if (!clockEl) return;
+
+            const now = new Date();
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const months = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            const dayName = days[now.getDay()];
+            const dateNum = String(now.getDate()).padStart(2, "0");
+            const monthName = months[now.getMonth()];
+            const yearNum = now.getFullYear();
+
+            const hours24 = now.getHours();
+            const ampm = hours24 >= 12 ? "PM" : "AM";
+            let hours12 = hours24 % 12;
+            if (hours12 === 0) hours12 = 12;
+            const hh = String(hours12).padStart(2, "0");
+            const mm = String(now.getMinutes()).padStart(2, "0");
+            const ss = String(now.getSeconds()).padStart(2, "0");
+
+            clockEl.textContent = `${dayName}, ${dateNum} ${monthName} ${yearNum} • ${hh}:${mm}:${ss} ${ampm}`;
+        }
+
+        // Parse a birthday string (YYYY-MM-DD or text containing a date) into month (0-11) & day (1-31)
+        function parseBirthdayMonthDay(rawStr) {
+            if (!rawStr) return null;
+            const text = String(rawStr).trim();
+            if (!text || /anniv/i.test(text)) return null;
+
+            const isoMatch = text.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
+            if (isoMatch) {
+                const m = parseInt(isoMatch[2], 10) - 1;
+                const d = parseInt(isoMatch[3], 10);
+                if (m >= 0 && m <= 11 && d >= 1 && d <= 31) return { month: m, day: d };
+            }
+
+            const cleaned = text.replace(/^(b'?day|birthday|dob)\s*:?\s*/i, "").trim();
+            const parsed = new Date(`${cleaned} ${new Date().getFullYear()}`);
+            if (!isNaN(parsed.getTime())) {
+                return { month: parsed.getMonth(), day: parsed.getDate() };
+            }
+            return null;
+        }
+
+        // Display only the single closest upcoming birthday and exact days remaining
+        function updateClosestBirthdayCountdown() {
+            const nameEl = document.getElementById("closestBirthdayName");
+            const badgeEl = document.getElementById("closestBirthdayDaysBadge");
+            if (!nameEl || !badgeEl) return;
+
+            const today = new Date();
+            const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const msPerDay = 1000 * 60 * 60 * 24;
+
+            let closest = null;
+
+            familyMembers.forEach(member => {
+                const md = parseBirthdayMonthDay(member.celebration || member.birthday);
+                if (!md) return;
+
+                let nextBday = new Date(startOfToday.getFullYear(), md.month, md.day);
+                if (nextBday < startOfToday) {
+                    nextBday = new Date(startOfToday.getFullYear() + 1, md.month, md.day);
+                }
+
+                const daysLeft = Math.round((nextBday - startOfToday) / msPerDay);
+                if (!closest || daysLeft < closest.daysLeft) {
+                    closest = {
+                        name: member.name,
+                        daysLeft,
+                        dateLabel: nextBday.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                    };
+                }
+            });
+
+            if (!closest) {
+                nameEl.textContent = "No birthday date set";
+                badgeEl.textContent = "-- days left";
+                return;
+            }
+
+            nameEl.textContent = `${closest.name} (${closest.dateLabel})`;
+            if (closest.daysLeft === 0) {
+                badgeEl.textContent = "Today!";
+            } else if (closest.daysLeft === 1) {
+                badgeEl.textContent = "1 day left";
+            } else {
+                badgeEl.textContent = `${closest.daysLeft} days left`;
             }
         }
 
@@ -773,7 +911,7 @@
         async function fetchLatestFromGoogleSheet(notifyUser = false) {
             if (!hasValidSheetUrl()) {
                 setSheetBadge("setup", "Add Sheet URL");
-                if (notifyUser) showToast("Please paste your Google Apps Script Web App URL in index.html first!");
+                if (notifyUser) showToast("Please paste your Google Apps Script Web App URL in index_2.html first!");
                 return;
             }
             try {
@@ -835,6 +973,8 @@
                 if (Array.isArray(parsed.galleryFolders)) galleryFolders = parsed.galleryFolders;
                 if (Array.isArray(parsed.galleryPhotos)) galleryPhotos = parsed.galleryPhotos;
 
+                updateClosestBirthdayCountdown();
+
                 if (currentUser) {
                     const refreshedUser = familyUsersDB.find(
                         u => u.name.trim().toLowerCase() === currentUser.name.trim().toLowerCase()
@@ -851,7 +991,6 @@
                         if (roleDisplay) roleDisplay.innerText = currentUser.roleDesc;
                     }
                     populateFamilyHeadSelect();
-                    renderCelebrations();
                     renderDirectory();
                     renderEvents();
                     renderMilestones();
@@ -1338,7 +1477,7 @@
                 closeEditMemberModal();
                 populateFamilyHeadSelect(finalFamilyGroup);
                 populateEditAvatarDropdown();
-                renderCelebrations();
+                updateClosestBirthdayCountdown();
                 renderDirectory();
                 renderAdminTable();
                 syncHubState();
@@ -1475,7 +1614,7 @@
                 toggleCustomFamilyInput('new');
                 toggleMemberTagFields();
 
-                renderCelebrations();
+                updateClosestBirthdayCountdown();
                 renderDirectory();
                 renderAdminTable();
                 populateEditAvatarDropdown();
@@ -1510,7 +1649,7 @@
 
                 showToast(`Member "${userName}" deleted!`);
                 populateFamilyHeadSelect();
-                renderCelebrations();
+                updateClosestBirthdayCountdown();
                 renderDirectory();
                 renderAdminTable();
                 populateEditAvatarDropdown();
@@ -1657,12 +1796,12 @@
             const isAdmin = currentUser && currentUser.role === 'admin';
 
             if (!familyMilestones.length) {
-                feed.innerHTML = `<p class="text-sm text-slate-400 italic col-span-full bg-white p-6 rounded-3xl border border-sand-200">No family milestones posted yet.</p>`;
+                feed.innerHTML = `<p class="text-sm text-slate-400 italic col-span-full glass-panel p-6 rounded-3xl">No family milestones posted yet.</p>`;
                 return;
             }
 
             feed.innerHTML = familyMilestones.map(ms => `
-                <div class="bg-white p-5 rounded-3xl border border-sand-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex flex-col justify-between space-y-3">
+                <div class="glass-panel p-5 rounded-3xl shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex flex-col justify-between space-y-3">
                     <div class="space-y-2">
                         <div class="flex items-center justify-between gap-2">
                             <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pastel-100 text-pastel-800 border border-pastel-200">
@@ -1681,27 +1820,6 @@
                         <p class="text-xs font-semibold text-pastel-700"><i class="fa-solid fa-user-check mr-1"></i> ${ms.memberName}</p>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">${ms.note}</p>
                     </div>
-                </div>
-            `).join('');
-        }
-
-        function renderCelebrations() {
-            const listEl = document.getElementById('celebrationsList');
-            if (!listEl) return;
-
-            const items = familyMembers.filter(m => m.celebration && m.celebration.trim() !== '');
-            if (!items.length) {
-                listEl.innerHTML = `<p class="text-xs text-slate-500 italic col-span-full">No birthdays or anniversaries added yet.</p>`;
-                return;
-            }
-
-            listEl.innerHTML = items.map(m => `
-                <div class="bg-white/90 px-3.5 py-2.5 rounded-2xl border border-pastel-200/80 flex items-center justify-between gap-2 shadow-2xs">
-                    <div class="min-w-0">
-                        <div class="text-xs font-bold text-slate-800 truncate">${m.name}</div>
-                        <div class="text-[11px] font-semibold text-pastel-700 truncate">${m.celebration}</div>
-                    </div>
-                    <i class="fa-solid fa-gift text-amber-500 text-sm flex-shrink-0"></i>
                 </div>
             `).join('');
         }
@@ -1746,7 +1864,7 @@
 
         function initApp() {
             populateFamilyHeadSelect();
-            renderCelebrations();
+            updateClosestBirthdayCountdown();
             renderDirectory();
             renderEvents();
             renderMilestones();
@@ -1815,9 +1933,10 @@
                                     : '';
                                 const staggerDelay = Math.min(idx * 35, 210);
                                 return `
-                                    <div style="animation-delay: ${staggerDelay}ms" class="bg-white rounded-2xl p-4 border border-sand-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex items-start justify-between gap-3">
+                                    <div style="animation-delay: ${staggerDelay}ms" class="glass-panel rounded-2xl p-4 shadow-sm hover:shadow-md hub-card-hover anim-card-enter flex items-start justify-between gap-3">
                                         <div class="flex items-start gap-3.5 min-w-0 w-full">
-                                            <div class="w-12 h-12 rounded-xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-lg flex-shrink-0 border border-sand-200 relative">
+                                            <!-- Far-Left Square Avatar -->
+                                            <div class="w-16 h-16 rounded-2xl overflow-hidden aspect-square bg-pastel-100 text-pastel-700 font-bold flex items-center justify-center text-xl flex-shrink-0 border border-pastel-200 relative">
                                                 <img src="${avatarSrc}" alt="${m.name}" class="w-full h-full object-cover aspect-square" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
                                                 <span class="hidden">${initial}</span>
                                             </div>
@@ -1827,15 +1946,14 @@
                                                     ${badgeHtml}
                                                     ${bloodBadge}
                                                 </div>
-                                                ${m.celebration ? `<div class="text-[11px] text-amber-700 font-medium"><i class="fa-solid fa-cake-candles mr-1 text-amber-500"></i> ${m.celebration}</div>` : ''}
                                                 ${hideContact ? '' : `
-                                                    ${m.phone ? `<a href="tel:${m.phone}" class="text-xs text-pastel-600 hover:underline block"><i class="fa-solid fa-phone mr-1"></i> ${m.phone}</a>` : ''}
+                                                    ${m.phone ? `<a href="tel:${m.phone}" class="text-xs font-medium text-pastel-700 hover:underline flex items-center gap-1.5 pt-0.5"><i class="fa-solid fa-phone text-pastel-600 text-[11px]"></i> <span>${m.phone}</span></a>` : ''}
                                                     ${m.address ? `
                                                         <div class="flex items-center gap-2 flex-wrap pt-0.5">
-                                                            <a href="${m.address}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-500 hover:text-pastel-600 truncate"><i class="fa-solid fa-location-dot mr-1"></i> Open Google Maps</a>
+                                                            <a href="${m.address}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-600 hover:text-pastel-700 inline-flex items-center gap-1 truncate"><i class="fa-solid fa-location-dot text-rose-500 text-[11px]"></i> <span>Open Google Maps</span></a>
                                                             ${locTagBadge}
                                                         </div>
-                                                    ` : ''}
+                                                    ` : (m.locationTag ? `<div class="pt-0.5">${locTagBadge}</div>` : '')}
                                                 `}
                                             </div>
                                         </div>
@@ -1870,7 +1988,7 @@
                 const safeVenue = e.venue.replace(/'/g, "\\'");
                 const safeAgenda = e.agenda.replace(/'/g, "\\'");
                 return `
-                    <div class="bg-white p-6 rounded-3xl border border-sand-200 shadow-sm hover:shadow-md hub-card-hover anim-card-enter space-y-3 flex flex-col justify-between">
+                    <div class="glass-panel p-6 rounded-3xl shadow-sm hover:shadow-md hub-card-hover anim-card-enter space-y-3 flex flex-col justify-between">
                         <div class="space-y-2">
                             <div class="flex justify-between items-start gap-2">
                                 <h3 class="text-xl font-bold font-display text-slate-800">${e.title}</h3>
@@ -1947,11 +2065,7 @@
                 if (!folder || !title || !url) return false;
 
                 const photosInFolder = galleryPhotos.filter(p => p.folder.toLowerCase() === folder.toLowerCase());
-                if (photosInFolder.length >= 20) {
-                    setGalleryStatus(`Limit reached: Folder "${folder}" already has the maximum of 20 photos.`, true);
-                    showToast(`Max 20 photos allowed in "${folder}"!`);
-                    return false;
-                }
+                const updatedCount = photosInFolder.length + 1;
 
                 galleryPhotos.push({
                     id: Date.now() + Math.floor(Math.random() * 1000),
@@ -1960,7 +2074,7 @@
                     url: url
                 });
 
-                setGalleryStatus(`Photo "${title}" added to "${folder}" (${photosInFolder.length + 1}/20).`, false);
+                setGalleryStatus(`Photo "${title}" added to "${folder}" (Total: ${updatedCount} photos).`, false);
                 showToast(`Photo added to "${folder}"!`);
                 document.getElementById('galTitle').value = '';
                 document.getElementById('galUrl').value = '';
@@ -2006,15 +2120,15 @@
             grid.innerHTML = Object.entries(grouped).map(([folderName, photos]) => {
                 const safeFolder = folderName.replace(/'/g, "\\'");
                 return `
-                <div class="space-y-3 bg-white p-4 sm:p-5 rounded-3xl border border-sand-200 shadow-sm anim-card-enter">
-                    <div class="flex items-center justify-between gap-2 border-b border-sand-100 pb-3">
+                <div class="space-y-3 glass-panel p-4 sm:p-5 rounded-3xl shadow-sm anim-card-enter">
+                    <div class="flex items-center justify-between gap-2 border-b border-sand-200/80 pb-3">
                         <div class="flex items-center gap-2 min-w-0">
                             <i class="fa-solid fa-folder-open text-pastel-600 text-lg sm:text-xl flex-shrink-0"></i>
                             <h3 class="text-base sm:text-lg font-bold font-display text-slate-800 truncate">${folderName}</h3>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <span class="text-xs font-bold px-2.5 py-1 ${photos.length >= 20 ? 'bg-rose-100 text-rose-700' : 'bg-pastel-100 text-pastel-700'} rounded-full">
-                                ${photos.length}/20 Photos
+                            <span class="text-xs font-bold px-2.5 py-1 bg-pastel-100 text-pastel-700 rounded-full">
+                                ${photos.length} ${photos.length === 1 ? 'Photo' : 'Photos'}
                             </span>
                             ${isAdmin ? `
                                 <button type="button" onclick="handleDeleteFolder('${safeFolder}')" title="Delete Folder & All Photos" class="px-2.5 py-1 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg transition flex items-center gap-1">
@@ -2024,7 +2138,7 @@
                         </div>
                     </div>
                     ${photos.length === 0
-                        ? `<p class="text-xs text-slate-400 italic py-2">Folder "${folderName}" created (0/20 photos).</p>`
+                        ? `<p class="text-xs text-slate-400 italic py-2">Folder "${folderName}" created (0 photos).</p>`
                         : `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                             ${photos.map(p => {
                                 const safeUrl = p.url.replace(/'/g, "\\'");
@@ -2088,7 +2202,11 @@
             }).join('');
         }
 
+        updateFullLiveClock();
+        setInterval(updateFullLiveClock, 1000);
+        updateClosestBirthdayCountdown();
         loadLocalCachedState();
+        updateClosestBirthdayCountdown();
     </script>
 </body>
 </html>
